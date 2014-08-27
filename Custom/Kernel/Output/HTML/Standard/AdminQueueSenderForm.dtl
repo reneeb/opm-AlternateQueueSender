@@ -1,0 +1,87 @@
+# --
+# AgentQueueSenderForm.dtl - provides HTML form for QueueSender settings
+# Copyright (C) 2014 Perl-Services.de, http://www.perl-services.de
+# --
+# This software comes with ABSOLUTELY NO WARRANTY. For details, see
+# the enclosed file COPYING for license information (AGPL). If you
+# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# --
+
+<div class="MainBox ARIARoleMain LayoutFixedSidebar SidebarFirst">
+    <h1>$Text{"QueueSender Management"}</h1>
+    <div class="SidebarColumn">
+        <div class="WidgetSimple">
+            <div class="Header">
+                <h2>$Text{"Actions"}</h2>
+            </div>
+            <div class="Content">
+                <ul class="ActionList">
+                    <li>
+                        <a href="$Env{"Baselink"}Action=$Env{"Action"}" class="CallForAction"><span>$Text{"Go to overview"}</span></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="ContentColumn">
+        <div class="WidgetSimple">
+            <div class="Header">
+                <h2>$Text{"Add/Change QueueSender"}</h2>
+            </div>
+            <div class="Content">
+                <form action="$Env{"CGIHandle"}" method="post" class="Validate">
+
+                    <input type="hidden" name="Action" value="$Env{"Action"}"/>
+                    <input type="hidden" name="Subaction" value="$QData{"Subaction"}"/>
+
+                    <fieldset class="TableLike">
+                        <label for="QueueID" class="Mandatory">
+                            <span class="Marker">*</span>
+                            $Text{"Queue"}:
+                        </label>
+                        <div class="Field">
+<!-- dtl:block:QueueID -->
+                             <input type="hidden" name="QueueID" value="$QData{"QueueID"}"/>
+                             $QData{"Queue"}
+<!-- dtl:block:QueueID -->
+<!-- dtl:block:QueueSelect -->
+                            $Data{"QueueSelect"}
+<!-- dtl:block:QueueSelect -->
+                            <div id="QueueIDError" class="TooltipErrorMessage">
+                                <p>$Text{"Queue is mandatory."}</p>
+                            </div>
+                            <div id="QueueIDServerError" class="TooltipErrorMessage">
+                                <p>$Text{"Queue is mandatory."}</p>
+                            </div>
+                        </div>
+                        <div class="Clear"></div>
+
+                        <label for="SystemAddressIDs" class="Mandatory">
+                            <span class="Marker">*</span>
+                            $Text{"Sender"}:
+                        </label>
+                        <div class="Field">
+                            $Data{"SystemAddressSelect"}
+                            <div id="SystemAddressIDsError" class="TooltipErrorMessage">
+                                <p>$Text{"Please select sender addresses."}</p>
+                            </div>
+                            <div id="SystemAddressIDsServerError" class="TooltipErrorMessage">
+                                <p>$Text{"Please select sender addresses."}</p>
+                            </div>
+                        </div>
+                        <div class="Clear"></div>
+
+                        <div class="Field">
+                            <button class="Primary" type="submit" value="$Text{"Save"}">$Text{"Save"}</button>
+                            $Text{"or"}
+                            <a href="$Env{"Baselink"}Action=$Env{"Action"}">$Text{"Cancel"}</a>
+                        </div>
+                        <div class="Clear"></div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="Clear"></div>
+</div>

@@ -1,0 +1,71 @@
+# --
+# AdminQueueSenderList.dtl - provides HTML form for AdminQueueSenderList
+# Copyright (C) 2014 Perl-Services.de, http://www.perl-services.de
+# --
+# This software comes with ABSOLUTELY NO WARRANTY. For details, see
+# the enclosed file COPYING for license information (AGPL). If you
+# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# --
+
+<div class="MainBox ARIARoleMain LayoutFixedSidebar SidebarFirst">
+    <h1>$Text{"QueueSender Management"}</h1>
+    <div class="SidebarColumn">
+        <div class="WidgetSimple">
+            <div class="Header">
+                <h2>$Text{"Actions"}</h2>
+            </div>
+            <div class="Content">
+                <ul class="ActionList">
+                    <li>
+                        <a href="$Env{"Baselink"}Action=$Env{"Action"};Subaction=Add" class="CallForAction"><span>$Text{"Add Queuesender"}</span></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="ContentColumn">
+        <div class="WidgetSimple">
+            <div class="Header">
+                <h2>$Text{"List"}</h2>
+            </div>
+            <div class="Content">
+                <table class="DataTable" id="QueueSender">
+                    <thead>
+                        <tr>
+                            <th>$Text{"Queue"}</th>
+                            <th>$Text{"Sender"}</th>
+                            <th>$Text{"Action"}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+<!-- dtl:block:NoQueueSenderFound -->
+                        <tr>
+                            <td colspan="2">$Text{"No matches found."}</td>
+                        </tr>
+<!-- dtl:block:NoQueueSenderFound -->
+<!-- dtl:block:QueueSenderRow -->
+                        <tr>
+                            <td>
+                                $QData{"Queue"}
+                            </td>
+                            <td>
+                                $QData{"Sender"}
+                            </td>
+                            <td>
+                                <a href="$Env{"Baselink"}Action=AdminQueueSender;Subaction=Edit;QueueID=$LQData{"QueueID"}">
+                                $Text{"edit"}
+                                </a> |
+                                <a href="$Env{"Baselink"}Action=AdminQueueSender;Subaction=Delete;QueueID=$LQData{"QueueID"}">
+                                $Text{"delete"}
+                                </a>
+                            </td>
+                        </tr>
+<!-- dtl:block:QueueSenderRow -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="Clear"></div>
+</div>
