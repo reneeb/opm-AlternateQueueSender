@@ -67,9 +67,13 @@ sub Run {
 
     return 1 if !%List;
 
+    my %Queue = $Self->{QueueObject}->QueueGet(
+        ID => $Ticket{QueueID},
+    );
+
     my %IDAddressMap;
     my %SenderAddresses;
-    for my $ID ( keys %List ) {
+    for my $ID ( keys %List, $Queue{SystemAddressID} ) {
         my %Address = $Self->{SystemAddressObject}->SystemAddressGet(
             ID => $ID,
         );

@@ -220,7 +220,7 @@ sub _MaskQueueSenderForm {
         );
     }
 
-    my %SystemAddresses = $Self->{SystemAddressObject}->SystemAddressList();
+    my %SystemAddresses = $Self->{SystemAddressObject}->SystemAddressList( Valid => 1 );
     $Param{SystemAddressSelect} = $Self->{LayoutObject}->BuildSelection(
         Data       => \%SystemAddresses,
         Name       => 'SystemAddressIDs',
