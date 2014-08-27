@@ -1,0 +1,42 @@
+{
+    "name": "AlternateQueueSender",
+    "version": "3.3.1",
+    "framework": [
+        "3.3.x"
+    ],
+    "vendor": {
+        "name":  "Perl-Services.de",
+        "url": "http://www.perl-services.de"
+    },
+    "license": "GNU AFFERO GENERAL PUBLIC LICENSE Version 3, November 2007",
+    "description" : {
+        "en": "Have more than one sender address for a queue",
+        "de": "Möglichkeit mehr als eine Absenderadresse pro Queue zu haben"
+    },
+    "database" : [
+       {
+            "type": "TableCreate",
+            "version": 0,
+            "name": "ps_queue_sender",
+            "columns": [
+                { "name": "id", "required": "true", "auto_increment": "true", "type": "INTEGER", "primary_key": "true" },
+                { "name": "queue_id", "required": "true", "type": "INTEGER" },
+                { "name": "sender_address_id", "required": "true", "type": "SMALLINT" },
+            ],
+            "keys" : [
+                {
+                    "name": "queue",
+                    "references": [
+                        { "local": "queue_id", "foreign": "id" },
+                    ]
+                },
+                {
+                    "name": "system_address",
+                    "references": [
+                        { "local": "sender_address_id", "foreign": "id" }
+                    ]
+                }
+            ]
+        }
+    ]
+}
