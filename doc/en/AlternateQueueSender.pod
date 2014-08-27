@@ -1,0 +1,24 @@
+=head1 NAME
+
+AlternateQueueSender
+
+=head1 DESCRIPTION
+
+By default, each queue has one sender address assigned. This is usually a good idea, but under
+some circumstances, you may need to have several sender addresses per queue.
+
+E.g. you have two queues "East::Hardware" that has "east.hardware@company.example" as the sender
+address and "West::Hardware" that has "west.hardware@company.example" as the sender address.
+You have one hardware supplier where only one of your mail addresses is registered as a customer.
+Now you have a ticket that you want to forward to your hardware supplier. What to do? You
+have two different sender addresses, but only one is registered as a customer.
+
+With this add-on, you can define several sender addresses for a single queue. For tickets in those
+queues a dropdown is shown in the forward/bounce/answer dialogs (depends on configuration). Now
+the agent can choose the sender address.
+
+By default the standard queue address is selected.
+
+=head1 AUTHOR
+
+Renee Baecker C<< <info@feature-addons.de> >>
