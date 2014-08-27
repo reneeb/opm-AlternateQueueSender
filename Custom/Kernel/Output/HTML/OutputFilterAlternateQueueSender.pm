@@ -16,6 +16,7 @@ use Kernel::System::Encode;
 use Kernel::System::Ticket;
 use Kernel::System::Time;
 use Kernel::System::DB;
+use Kernel::System::Queue;
 use Kernel::System::QueueSender;
 use Kernel::System::SystemAddress;
 
@@ -39,6 +40,7 @@ sub new {
     $Self->{EncodeObject}        = $Param{EncodeObject} || Kernel::System::Encode->new( %{$Self} );
     $Self->{TimeObject}          = $Param{TimeObject}   || Kernel::System::Time->new( %{$Self} );
     $Self->{DBObject}            = $Param{DBObject}     || Kernel::System::DB->new( %{$Self} );
+    $Self->{QueueObject}         = $Param{QueueObject}  || Kernel::System::Queue->new( %{$Self} );
     $Self->{QueueSenderObject}   = Kernel::System::QueueSender->new( %{$Self} );
     $Self->{SystemAddressObject} = Kernel::System::SystemAddress->new( %{$Self} );
 
@@ -65,6 +67,7 @@ sub Run {
 
     return 1 if !%List;
 
+    my %IDAddressMap;
     my %SenderAddresses;
     for my $ID ( keys %List ) {
         my %Address = $Self->{SystemAddressObject}->SystemAddressGet(
@@ -75,15 +78,24 @@ sub Run {
 
         my $Address = $Address{Realname} ? (sprintf "%s <%s>", $Address{Realname}, $Address{Name}) : $Address{Name};
         $SenderAddresses{$Address} = $Address;
+
+        $IDAddressMap{ $ID } = $Address;
     }
 
     return if !%SenderAddresses;
+
+    my %Queue = $Self->{QueueObject}->QueueGet(
+        ID => $Ticket{QueueID},
+    );
+
+    my $QueueSystemAddressID = $Queue{SystemAddressID};
+    my $SelectedAddress      = $IDAddressMap{ $QueueSystemAddressID };
         
     my $Select = $Self->{LayoutObject}->BuildSelection(
         Data          => \%SenderAddresses,
         Name          => 'From',
         Size          => 1,
-        SelectedValue => [ values %List ],
+        SelectedValue => $SelectedAddress,
     );
 
     ${ $Param{Data} } =~ s{(
