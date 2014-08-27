@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<otrs_package version="1.0">
+    <!-- GENERATED WITH OTRS::OPM::Maker::Command::sopm (1.21) -->
+    <Name>AlternateQueueSender</Name>
+    <Version>3.3.32</Version>
+    <Framework>3.3.x</Framework>
+    <Vendor>Perl-Services.de</Vendor>
+    <URL>http://www.perl-services.de</URL>
+    <Description Lang="de">Möglichkeit mehr als eine Absenderadresse pro Queue zu haben</Description>
+    <Description Lang="en">Have more than one sender address for a queue</Description>
+    <License>GNU AFFERO GENERAL PUBLIC LICENSE Version 3, November 2007</License>
+    <Filelist>
+        <File Permission="644" Location="Custom/Kernel/Modules/AdminQueueSender.pm" />
+        <File Permission="644" Location="Custom/Kernel/Output/HTML/OutputFilterAlternateQueueSender.pm" />
+        <File Permission="644" Location="Custom/Kernel/Output/HTML/Standard/AdminQueueSenderForm.dtl" />
+        <File Permission="644" Location="Custom/Kernel/Output/HTML/Standard/AdminQueueSenderList.dtl" />
+        <File Permission="644" Location="Custom/Kernel/System/QueueSender.pm" />
+        <File Permission="644" Location="Kernel/Config/Files/AlternateQueueSender.xml" />
+        <File Permission="644" Location="Kernel/Language/de_AlternateQueueSender.pm" />
+        <File Permission="644" Location="doc/AlternateQueueSender.json" />
+    </Filelist>
+    <DatabaseInstall Type="post">
+        <TableCreate Name="ps_queue_sender">
+            <Column Name="id" Required="true" Type="INTEGER" AutoIncrement="true" PrimaryKey="true" />
+            <Column Name="queue_id" Required="true" Type="INTEGER" />
+            <Column Name="sender_address_id" Required="true" Type="SMALLINT" />
+            <ForeignKey ForeignTable="queue">
+                <Reference Local="queue_id" Foreign="id" />
+            </ForeignKey>
+            <ForeignKey ForeignTable="system_address">
+                <Reference Local="sender_address_id" Foreign="id" />
+            </ForeignKey>
+        </TableCreate>
+    </DatabaseInstall>
+    <DatabaseUninstall Type="pre">
+        <TableDrop Name="ps_queue_sender" />
+    </DatabaseUninstall>
+</otrs_package>
