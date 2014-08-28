@@ -240,17 +240,19 @@ sub _MaskQueueSenderForm {
         }
 
         for my $Queue ( sort keys %QueueSenderList ) {
+            my %Row = %Param;
+
             my %QueueSender = $Self->{QueueSenderObject}->QueueSenderGet(
                 QueueID => $QueueSenderList{$Queue},
             );
 
-            $Param{Queue}   = $Queue;
-            $Param{QueueID} = $QueueSenderList{$Queue};
-            $Param{Sender}  = join ', ', sort values %QueueSender;
+            $Row{Queue}   = $Queue;
+            $Row{QueueID} = $QueueSenderList{$Queue};
+            $Row{Sender}  = join ', ', sort values %QueueSender;
 
             $Self->{LayoutObject}->Block(
                 Name => 'QueueSenderRow',
-                Data => \%Param,
+                Data => \%Row,
             );
         }
     }
