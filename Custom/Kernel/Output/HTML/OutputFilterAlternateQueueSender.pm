@@ -79,10 +79,6 @@ sub Run {
 
     return if !%SenderAddresses;
 
-    my %Queue = $QueueObject->QueueGet(
-        ID => $Ticket{QueueID},
-    );
-
     my $QueueSystemAddressID = $Queue{SystemAddressID};
     my $SelectedAddress      = $IDAddressMap{ $QueueSystemAddressID };
         
