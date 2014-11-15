@@ -14,6 +14,11 @@ use warnings;
 
 our $VERSION = 0.02;
 
+our @ObjectDependencies = qw(
+    Kernel::System::Log
+    Kernel::System::DB
+);
+
 =head1 NAME
 
 Kernel::System::QueueSender - backend for queue sender 
