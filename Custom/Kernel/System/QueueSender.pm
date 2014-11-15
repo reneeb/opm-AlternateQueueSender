@@ -12,7 +12,7 @@ package Kernel::System::QueueSender;
 use strict;
 use warnings;
 
-our $VERSION = 0.01;
+our $VERSION = 0.02;
 
 =head1 NAME
 
@@ -28,40 +28,6 @@ Kernel::System::QueueSender - backend for queue sender
 
 create an object
 
-    use Kernel::Config;
-    use Kernel::System::Encode;
-    use Kernel::System::Log;
-    use Kernel::System::Main;
-    use Kernel::System::DB;
-    use Kernel::System::QueueSender;
-
-    my $ConfigObject = Kernel::Config->new();
-    my $EncodeObject = Kernel::System::Encode->new(
-        ConfigObject => $ConfigObject,
-    );
-    my $LogObject = Kernel::System::Log->new(
-        ConfigObject => $ConfigObject,
-        EncodeObject => $EncodeObject,
-    );
-    my $MainObject = Kernel::System::Main->new(
-        ConfigObject => $ConfigObject,
-        EncodeObject => $EncodeObject,
-        LogObject    => $LogObject,
-    );
-    my $DBObject = Kernel::System::DB->new(
-        ConfigObject => $ConfigObject,
-        EncodeObject => $EncodeObject,
-        LogObject    => $LogObject,
-        MainObject   => $MainObject,
-    );
-    my $QueueSenderObject = Kernel::System::QueueSender->new(
-        ConfigObject => $ConfigObject,
-        LogObject    => $LogObject,
-        DBObject     => $DBObject,
-        MainObject   => $MainObject,
-        EncodeObject => $EncodeObject,
-    );
-
 =cut
 
 sub new {
@@ -70,11 +36,6 @@ sub new {
     # allocate new hash for object
     my $Self = {};
     bless( $Self, $Type );
-
-    # check needed objects
-    for my $Object (qw(DBObject ConfigObject MainObject LogObject EncodeObject TimeObject)) {
-        $Self->{$Object} = $Param{$Object} || die "Got no $Object!";
-    }
 
     return $Self;
 }
@@ -93,10 +54,13 @@ to add a news
 sub QueueSenderAdd {
     my ( $Self, %Param ) = @_;
 
+    my $LogObject = $Kernel::OM->Get('Kernel::System::Log');
+    my $DBObject  = $Kernel::OM->Get('Kernel::System::DB');
+
     # check needed stuff
     for my $Needed (qw(QueueID SystemAddressID)) {
         if ( !$Param{$Needed} ) {
-            $Self->{LogObject}->Log(
+            $LogObject->Log(
                 Priority => 'error',
                 Message  => "Need $Needed!",
             );
@@ -105,7 +69,7 @@ sub QueueSenderAdd {
     }
 
     # insert queue address
-    return if !$Self->{DBObject}->Do(
+    return if !$DBObject->Do(
         SQL => 'INSERT INTO ps_queue_sender (queue_id, sender_address_id) VALUES (?,?)',
         Bind => [
             \$Param{QueueID},
@@ -113,20 +77,20 @@ sub QueueSenderAdd {
         ],
     );
 
-    # get new invoice id
-    return if !$Self->{DBObject}->Prepare(
+    # get new sender id
+    return if !$DBObject->Prepare(
         SQL   => 'SELECT MAX(id) FROM ps_queue_sender WHERE queue_id = ? AND sender_address_id = ?',
         Bind  => [ \$Param{QueueID}, \$Param{SystemAddressID} ],
         Limit => 1,
     );
 
     my $ID;
-    while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
+    while ( my @Row = $DBObject->FetchrowArray() ) {
         $ID = $Row[0];
     }
 
     # log notice
-    $Self->{LogObject}->Log(
+    $LogObject->Log(
         Priority => 'notice',
         Message  => "QueueSender '$ID' created successfully!",
     );
@@ -153,9 +117,12 @@ This returns something like:
 sub QueueSenderGet {
     my ( $Self, %Param ) = @_;
 
+    my $LogObject = $Kernel::OM->Get('Kernel::System::Log');
+    my $DBObject  = $Kernel::OM->Get('Kernel::System::DB');
+
     # check needed stuff
     if ( !$Param{QueueID} ) {
-        $Self->{LogObject}->Log(
+        $LogObject->Log(
             Priority => 'error',
             Message  => 'Need QueueID!',
         );
@@ -163,14 +130,14 @@ sub QueueSenderGet {
     }
 
     # sql
-    return if !$Self->{DBObject}->Prepare(
+    return if !$DBObject->Prepare(
         SQL  => 'SELECT qs.queue_id, sender_address_id, value0 FROM ps_queue_sender qs '
             . '    INNER JOIN system_address sa ON qs.sender_address_id = sa.id WHERE qs.queue_id = ?',
         Bind => [ \$Param{QueueID} ],
     );
 
     my %QueueSender;
-    while ( my @Data = $Self->{DBObject}->FetchrowArray() ) {
+    while ( my @Data = $DBObject->FetchrowArray() ) {
         $QueueSender{$Data[1]} = $Data[2];
     }
 
@@ -190,16 +157,19 @@ deletes a news entry. Returns 1 if it was successful, undef otherwise.
 sub QueueSenderDelete {
     my ( $Self, %Param ) = @_;
 
+    my $LogObject = $Kernel::OM->Get('Kernel::System::Log');
+    my $DBObject  = $Kernel::OM->Get('Kernel::System::DB');
+
     # check needed stuff
     if ( !$Param{QueueID} ) {
-        $Self->{LogObject}->Log(
+        $LogObject->Log(
             Priority => 'error',
             Message  => 'Need QueueID!',
         );
         return;
     }
 
-    return $Self->{DBObject}->Do(
+    return $DBObject->Do(
         SQL  => 'DELETE FROM ps_queue_sender WHERE queue_id = ?',
         Bind => [ \$Param{QueueID} ],
     );
@@ -216,12 +186,15 @@ Get a list of all queues that have other senders configured
 sub QueueSenderQueueList {
     my ( $Self, %Param ) = @_;
 
-    return if !$Self->{DBObject}->Prepare(
+    my $LogObject = $Kernel::OM->Get('Kernel::System::Log');
+    my $DBObject  = $Kernel::OM->Get('Kernel::System::DB');
+
+    return if !$DBObject->Prepare(
         SQL  => 'SELECT name, q.id FROM queue q INNER JOIN ps_queue_sender qs ON q.id = qs.queue_id',
     );
 
     my %QueueList;
-    while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
+    while ( my @Row = $DBObject->FetchrowArray() ) {
         $QueueList{ $Row[0] } = $Row[1];
     }
 
