@@ -19,6 +19,12 @@ the agent can choose the sender address.
 
 By default the standard queue address is selected.
 
+=head1 SUPPORT & REPOSITORY
+
+If you find a bug or need support, please contact C<< <info@feature-addons.de> >>.
+
+You can find the repository at L<http://github.com/reneeb/otrs-AlternateQueueSender>.
+
 =head1 AUTHOR
 
 Renee Baecker C<< <info@feature-addons.de> >>
