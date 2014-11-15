@@ -12,12 +12,16 @@ package Kernel::Modules::AdminQueueSender;
 use strict;
 use warnings;
 
-use Kernel::System::QueueSender;
-use Kernel::System::HTMLUtils;
-use Kernel::System::Queue;
-use Kernel::System::SystemAddress;
+our $VERSION = 0.02;
 
-our $VERSION = 0.01;
+our @ObjectDepedencies = qw(
+    Kernel::System::QueueSender
+    Kernel::System::HTMLUtils
+    Kernel::System::Queue
+    Kernel::System::SystemAddress
+    Kernel::System::Web::Request
+    Kernel::Output::HTML::Layout
+);
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -30,16 +34,6 @@ sub new {
     my @Objects = qw(
         ParamObject DBObject LayoutObject ConfigObject LogObject TicketObject 
     );
-    for my $Needed (@Objects) {
-        if ( !$Self->{$Needed} ) {
-            $Self->{LayoutObject}->FatalError( Message => "Got no $Needed!" );
-        }
-    }
-
-    # create needed objects
-    $Self->{QueueSenderObject}   = Kernel::System::QueueSender->new(%Param);
-    $Self->{QueueObject}         = Kernel::System::Queue->new(%Param);
-    $Self->{SystemAddressObject} = Kernel::System::SystemAddress->new(%Param);
 
     return $Self;
 }
@@ -47,9 +41,13 @@ sub new {
 sub Run {
     my ( $Self, %Param ) = @_;
 
+    my $ParamObject        = $Kernel::OM->Get('Kernel::System::Web::Request');
+    my $LayoutObject       = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+    my $QueueSenderObject  = $Kernel::OM->Get('Kernel::System::QueueSender');
+
     my %GetParam = (
-        SystemAddressIDs => [ $Self->{ParamObject}->GetArray( Param => 'SystemAddressIDs' ) ],
-        QueueID          => $Self->{ParamObject}->GetParam( Param => 'QueueID' ),
+        SystemAddressIDs => [ $ParamObject->GetArray( Param => 'SystemAddressIDs' ) ],
+        QueueID          => $ParamObject->GetParam( Param => 'QueueID' ),
     );
 
     # ------------------------------------------------------------ #
@@ -61,14 +59,14 @@ sub Run {
             Add  => 'Save',
         );
 
-        my $Output       = $Self->{LayoutObject}->Header();
-        $Output .= $Self->{LayoutObject}->NavigationBar();
+        my $Output       = $LayoutObject->Header();
+        $Output .= $LayoutObject->NavigationBar();
         $Output .= $Self->_MaskQueueSenderForm(
             %GetParam,
             %Param,
             Subaction => $Subaction{ $Self->{Subaction} },
         );
-        $Output .= $Self->{LayoutObject}->Footer();
+        $Output .= $LayoutObject->Footer();
         return $Output;
     }
 
@@ -78,7 +76,7 @@ sub Run {
     elsif ( $Self->{Subaction} eq 'Update' ) {
 
         # challenge token check for write action
-        $Self->{LayoutObject}->ChallengeTokenCheck();
+        $LayoutObject->ChallengeTokenCheck();
  
         # server side validation
         my %Errors;
@@ -96,30 +94,30 @@ sub Run {
         if ( %Errors ) {
             $Self->{Subaction} = 'Edit';
 
-            my $Output = $Self->{LayoutObject}->Header();
-            $Output .= $Self->{LayoutObject}->NavigationBar();
+            my $Output = $LayoutObject->Header();
+            $Output .= $LayoutObject->NavigationBar();
             $Output .= $Self->_MaskQueueSenderForm(
                 %GetParam,
                 %Param,
                 %Errors,
                 Subaction => 'Update',
             );
-            $Output .= $Self->{LayoutObject}->Footer();
+            $Output .= $LayoutObject->Footer();
             return $Output;
         }
 
-        $Self->{QueueSenderObject}->QueueSenderDelete(
+        $QueueSenderObject->QueueSenderDelete(
             QueueID => $GetParam{QueueID},
         );
 
         for my $ID ( @{ $GetParam{SystemAddressIDs} } ) {
-            my $Update = $Self->{QueueSenderObject}->QueueSenderAdd(
+            my $Update = $QueueSenderObject->QueueSenderAdd(
                 SystemAddressID => $ID,
                 QueueID         => $GetParam{QueueID},
             );
         }
 
-        return $Self->{LayoutObject}->Redirect( OP => "Action=AdminQueueSender" );
+        return $LayoutObject->Redirect( OP => "Action=AdminQueueSender" );
     }
 
     # ------------------------------------------------------------ #
@@ -128,7 +126,7 @@ sub Run {
     elsif ( $Self->{Subaction} eq 'Save' ) {
 
         # challenge token check for write action
-        $Self->{LayoutObject}->ChallengeTokenCheck();
+        $LayoutObject->ChallengeTokenCheck();
 
         # server side validation
         my %Errors;
@@ -145,41 +143,41 @@ sub Run {
         if ( %Errors ) {
             $Self->{Subaction} = 'Add';
 
-            my $Output = $Self->{LayoutObject}->Header();
-            $Output .= $Self->{LayoutObject}->NavigationBar();
+            my $Output = $LayoutObject->Header();
+            $Output .= $LayoutObject->NavigationBar();
             $Output .= $Self->_MaskQueueSenderForm(
                 %GetParam,
                 %Param,
                 %Errors,
                 Subaction => 'Save',
             );
-            $Output .= $Self->{LayoutObject}->Footer();
+            $Output .= $LayoutObject->Footer();
             return $Output;
         }
 
         for my $ID ( @{ $GetParam{SystemAddressIDs} } ) {
-            $Self->{QueueSenderObject}->QueueSenderAdd(
+            $QueueSenderObject->QueueSenderAdd(
                 SystemAddressID => $ID,
                 QueueID         => $GetParam{QueueID},
             );
         }
 
-        return $Self->{LayoutObject}->Redirect( OP => "Action=AdminQueueSender" );
+        return $LayoutObject->Redirect( OP => "Action=AdminQueueSender" );
     }
 
     elsif ( $Self->{Subaction} eq 'Delete' ) {
-        $Self->{QueueSenderObject}->QueueSenderDelete( %GetParam );
-        return $Self->{LayoutObject}->Redirect( OP => "Action=AdminQueueSender" );
+        $QueueSenderObject->QueueSenderDelete( %GetParam );
+        return $LayoutObject->Redirect( OP => "Action=AdminQueueSender" );
     }
 
     # ------------------------------------------------------------ #
     # else ! print form
     # ------------------------------------------------------------ #
     else {
-        my $Output = $Self->{LayoutObject}->Header();
-        $Output .= $Self->{LayoutObject}->NavigationBar();
+        my $Output = $LayoutObject->Header();
+        $Output .= $LayoutObject->NavigationBar();
         $Output .= $Self->_MaskQueueSenderForm();
-        $Output .= $Self->{LayoutObject}->Footer();
+        $Output .= $LayoutObject->Footer();
         return $Output;
     }
 }
@@ -187,24 +185,29 @@ sub Run {
 sub _MaskQueueSenderForm {
     my ( $Self, %Param ) = @_;
 
+    my $QueueSenderObject   = $Kernel::OM->Get('Kernel::System::QueueSender');
+    my $QueueObject         = $Kernel::OM->Get('Kernel::System::Queue');
+    my $LayoutObject        = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+    my $SystemAddressObject = $Kernel::OM->Get('Kernel::System::SystemAddress');
+
     if ( $Self->{Subaction} eq 'Edit' ) {
-        my %QueueSender = $Self->{QueueSenderObject}->QueueSenderGet( QueueID => $Param{QueueID} );
+        my %QueueSender = $QueueSenderObject->QueueSenderGet( QueueID => $Param{QueueID} );
 
         $Param{SystemAddressIDs} = [ keys %QueueSender ];
     }
 
     if ( $Param{QueueID} ) {
-        $Param{Queue} = $Self->{QueueObject}->QueueLookup( QueueID => $Param{QueueID} );
+        $Param{Queue} = $QueueObject->QueueLookup( QueueID => $Param{QueueID} );
 
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'QueueID',
             Data => \%Param,
         );
     }
     else {
-        my %Queues = $Self->{QueueObject}->QueueList();
+        my %Queues = $QueueObject->QueueList();
 
-        $Param{QueueSelect} = $Self->{LayoutObject}->BuildSelection(
+        $Param{QueueSelect} = $LayoutObject->BuildSelection(
             Data         => \%Queues,
             Name         => 'QueueID',
             Size         => 1,
@@ -214,14 +217,14 @@ sub _MaskQueueSenderForm {
             TreeView     => 1,
         );
 
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'QueueSelect',
             Data => \%Param,
         );
     }
 
-    my %SystemAddresses = $Self->{SystemAddressObject}->SystemAddressList( Valid => 1 );
-    $Param{SystemAddressSelect} = $Self->{LayoutObject}->BuildSelection(
+    my %SystemAddresses = $SystemAddressObject->SystemAddressList( Valid => 1 );
+    $Param{SystemAddressSelect} = $LayoutObject->BuildSelection(
         Data       => \%SystemAddresses,
         Name       => 'SystemAddressIDs',
         Size       => 10,
@@ -231,10 +234,10 @@ sub _MaskQueueSenderForm {
 
     if ( $Self->{Subaction} ne 'Edit' && $Self->{Subaction} ne 'Add' ) {
 
-        my %QueueSenderList = $Self->{QueueSenderObject}->QueueSenderQueueList();
+        my %QueueSenderList = $QueueSenderObject->QueueSenderQueueList();
   
         if ( !%QueueSenderList ) {
-            $Self->{LayoutObject}->Block(
+            $LayoutObject->Block(
                 Name => 'NoQueueSenderFound',
             );
         }
@@ -242,7 +245,7 @@ sub _MaskQueueSenderForm {
         for my $Queue ( sort keys %QueueSenderList ) {
             my %Row = %Param;
 
-            my %QueueSender = $Self->{QueueSenderObject}->QueueSenderGet(
+            my %QueueSender = $QueueSenderObject->QueueSenderGet(
                 QueueID => $QueueSenderList{$Queue},
             );
 
@@ -250,7 +253,7 @@ sub _MaskQueueSenderForm {
             $Row{QueueID} = $QueueSenderList{$Queue};
             $Row{Sender}  = join ', ', sort values %QueueSender;
 
-            $Self->{LayoutObject}->Block(
+            $LayoutObject->Block(
                 Name => 'QueueSenderRow',
                 Data => \%Row,
             );
@@ -263,7 +266,7 @@ sub _MaskQueueSenderForm {
     my $TemplateFile = 'AdminQueueSenderList';
     $TemplateFile = 'AdminQueueSenderForm' if $Self->{Subaction};
 
-    return $Self->{LayoutObject}->Output(
+    return $LayoutObject->Output(
         TemplateFile => $TemplateFile,
         Data         => \%Param
     );
