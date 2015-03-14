@@ -56,6 +56,9 @@
 [% RenderBlockEnd("Sender") %]
                             </td>
                             <td>
+                                [% Data.Template | html %]
+                            </td>
+                            <td>
                                 <a href="[% Env("Baselink") %]Action=AdminQueueSender;Subaction=Edit;QueueID=[% Data.QueueID | uri %]"  class="CallForAction Center">
                                 <span>[% Translate("edit") | html %]</span>
                                 </a> 

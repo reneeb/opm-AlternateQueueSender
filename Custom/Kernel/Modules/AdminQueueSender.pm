@@ -241,7 +241,6 @@ sub _MaskQueueSenderForm {
     my %SystemAddressesToShow;
     my %SystemAddressInfo;
 
-    my %SystemAddressesToShow;
     for my $AddressID ( keys %SystemAddresses ) {
         my %Info = $SystemAddressObject->SystemAddressGet(
             ID => $AddressID,
