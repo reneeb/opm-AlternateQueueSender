@@ -44,6 +44,7 @@ sub Run {
     my $ParamObject        = $Kernel::OM->Get('Kernel::System::Web::Request');
     my $LayoutObject       = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
     my $QueueSenderObject  = $Kernel::OM->Get('Kernel::System::QueueSender');
+    my $QueueObject        = $Kernel::OM->Get('Kernel::System::Queue');
 
     my %GetParam = (
         SystemAddressIDs => [ $ParamObject->GetArray( Param => 'SystemAddressIDs' ) ],
@@ -60,7 +61,7 @@ sub Run {
             Add  => 'Save',
         );
 
-        my $Output       = $LayoutObject->Header();
+        my $Output = $LayoutObject->Header();
         $Output .= $LayoutObject->NavigationBar();
         $Output .= $Self->_MaskQueueSenderForm(
             %GetParam,
@@ -92,7 +93,7 @@ sub Run {
             $Errors{ 'SystemAddressIDsInvalid' } = 'ServerError';
         }
         elsif ( !@{$GetParam{SystemAddressIDs}} ) {
-            my %Queue = $Self->{QueueObject}->QueueGet(
+            my %Queue = $QueueObject->QueueGet(
                 ID => $GetParam{QueueID},
             );
         
@@ -149,7 +150,7 @@ sub Run {
             $Errors{ 'SystemAddressIDsInvalid' } = 'ServerError';
         }
         elsif ( !@{$GetParam{SystemAddressIDs}} ) {
-            my %Queue = $Self->{QueueObject}->QueueGet(
+            my %Queue = $QueueObject->QueueGet(
                 ID => $GetParam{QueueID},
             );
         

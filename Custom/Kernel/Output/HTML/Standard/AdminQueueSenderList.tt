@@ -86,8 +86,8 @@
 <script type="text/javascript">//<![CDATA[
 //Localizations
 PS.Admin.AlternateQueueSender.Localization = {
-    CancelMsg:      "$Text{"Cancel"}",
-    DeleteMsg:      "$Text{"Delete"}",
+    CancelMsg:      "[% Translate("Cancel") | html %]",
+    DeleteMsg:      "[% Translate("Delete") | html %]",
 };
 
 $('.QueueDelete').bind('click', function (Event) {
