@@ -221,8 +221,18 @@ sub _MaskQueueSenderForm {
     }
 
     my %SystemAddresses = $Self->{SystemAddressObject}->SystemAddressList( Valid => 1 );
+    my %SystemAddressesToShow;
+
+    for my $AddressID ( keys %SystemAddresses ) {
+        my %Info = $Self->{SystemAddressObject}->SystemAddressGet(
+            ID => $AddressID,
+        );
+
+        $SystemAddressesToShow{$AddressID} = sprintf "%s - %s", $Info{Realname}, $Info{Name};
+    }
+
     $Param{SystemAddressSelect} = $Self->{LayoutObject}->BuildSelection(
-        Data       => \%SystemAddresses,
+        Data       => \%SystemAddressesToShow,
         Name       => 'SystemAddressIDs',
         Size       => 10,
         Multiple   => 1,
