@@ -23,10 +23,11 @@ sub Data {
 
     return if ref $Lang ne 'HASH';
 
-    $Lang->{'Add Queuesender'} = 'Neue Queue <-> Sender';
+    $Lang->{'Add Queuesender'}        = 'Neue Queue <-> Sender';
     $Lang->{'Add/Change QueueSender'} = 'Alternative Queue-Absender hinzufügen/ändern';
     $Lang->{'QueueSender Management'} = 'Alternative Queue-Absender verwalten';
-    $Lang->{'edit'}                  = 'bearbeiten';
+    $Lang->{'edit'}                   = 'bearbeiten';
+    $Lang->{'Template for Realname'}  = 'Template für den Anzeigenamen';
 
     return 1;
 }
