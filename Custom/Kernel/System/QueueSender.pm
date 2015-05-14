@@ -106,10 +106,11 @@ sub QueueSenderAdd {
 
     # insert queue address
     return if !$Self->{DBObject}->Do(
-        SQL => 'INSERT INTO ps_queue_sender (queue_id, sender_address_id) VALUES (?,?)',
+        SQL => 'INSERT INTO ps_queue_sender (queue_id, sender_address_id, template) VALUES (?,?,?)',
         Bind => [
             \$Param{QueueID},
             \$Param{SystemAddressID},
+            \$Param{Template},
         ],
     );
 
@@ -164,7 +165,7 @@ sub QueueSenderGet {
 
     # sql
     return if !$Self->{DBObject}->Prepare(
-        SQL  => 'SELECT qs.queue_id, sender_address_id, value0 FROM ps_queue_sender qs '
+        SQL  => 'SELECT qs.queue_id, sender_address_id, value0, qs.template FROM ps_queue_sender qs '
             . '    INNER JOIN system_address sa ON qs.sender_address_id = sa.id WHERE qs.queue_id = ?',
         Bind => [ \$Param{QueueID} ],
     );
@@ -175,6 +176,47 @@ sub QueueSenderGet {
     }
 
     return %QueueSender;
+}
+
+=item QueueSenderTemplateGet()
+
+Returns the template for a given queue.
+
+    my $Template = $Object->QueueSenderTemplateGet(
+        QueueID => 123,
+    );
+
+=cut
+
+sub QueueSenderTemplateGet {
+    my ($Self, %Param) = @_;
+
+    my $LogObject = $Kernel::OM->Get('Kernel::System::Log');
+    my $DBObject  = $Kernel::OM->Get('Kernel::System::DB');
+
+    # check needed stuff
+    if ( !$Param{QueueID} ) {
+        $LogObject->Log(
+            Priority => 'error',
+            Message  => 'Need QueueID!',
+        );
+        return;
+    }
+
+    # sql
+    return if !$DBObject->Prepare(
+        SQL  => 'SELECT qs.template FROM ps_queue_sender qs '
+            . '    WHERE qs.queue_id = ?',
+        Bind  => [ \$Param{QueueID} ],
+        Limit => 1,
+    );
+
+    my $Template;
+    while ( my @Data = $DBObject->FetchrowArray() ) {
+        $Template = $Data[0];
+    }
+
+    return $Template;
 }
 
 =item QueueSenderDelete()
