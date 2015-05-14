@@ -72,6 +72,14 @@
                         </div>
                         <div class="Clear"></div>
 
+                        <label for="Template">
+                            [% Translate("Template for Realname") | html %]:
+                        </label>
+                        <div class="Field">
+                            <input type="text" name="Template" value="[% Data.Template | html %]" />
+                        </div>
+                        <div class="Clear"></div>
+
                         <div class="Field">
                             <button class="Primary" type="submit" value="$Text{"Save"}">$Text{"Save"}</button>
                             $Text{"or"}

@@ -50,6 +50,7 @@ sub Run {
     my %GetParam = (
         SystemAddressIDs => [ $Self->{ParamObject}->GetArray( Param => 'SystemAddressIDs' ) ],
         QueueID          => $Self->{ParamObject}->GetParam( Param => 'QueueID' ),
+        Template         => $Self->{ParamObject}->GetParam( Param => 'Template' ),
     );
 
     # ------------------------------------------------------------ #
@@ -116,6 +117,7 @@ sub Run {
             my $Update = $Self->{QueueSenderObject}->QueueSenderAdd(
                 SystemAddressID => $ID,
                 QueueID         => $GetParam{QueueID},
+                Template        => $GetParam{Template},
             );
         }
 
@@ -161,6 +163,7 @@ sub Run {
             $Self->{QueueSenderObject}->QueueSenderAdd(
                 SystemAddressID => $ID,
                 QueueID         => $GetParam{QueueID},
+                Template        => $GetParam{Template},
             );
         }
 
