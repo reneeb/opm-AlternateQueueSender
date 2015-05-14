@@ -71,8 +71,24 @@ sub Run {
         ID => $Ticket{QueueID},
     );
 
+    my $QueueSystemAddressID = $Queue{SystemAddressID};
+    my $Template             = $QueueSenderObject->QueueSenderTemplateGet( QueueID => $Ticket{QueueID} );
+
     my %IDAddressMap;
     my %SenderAddresses;
+
+    if ( $Template ) {
+        my $UserObject = $Kernel::OM->Get('Kernel::System::User');
+        my %UserData   = $UserObject->GetUserData(
+            UserID => $Param{UserID},
+        );
+
+        for my $Key ( keys %UserData ) {
+            my $Check = uc $Key;
+            $Template =~ s{<OTRS_$Check>}{$UserData{$Key}}xsmg
+        }
+    }
+
     for my $ID ( keys %List, $Queue{SystemAddressID} ) {
         my %Address = $Self->{SystemAddressObject}->SystemAddressGet(
             ID => $ID,
@@ -82,6 +98,11 @@ sub Run {
 
         my $Address = $Address{Realname} ? (sprintf "%s <%s>", $Address{Realname}, $Address{Name}) : $Address{Name};
         $SenderAddresses{$Address} = $Address;
+
+        if ( $Template ) {
+            $Address =  sprintf "%s <%s>", $Template, $Address{Name};
+            $SenderAddresses{$Address} = $Address;
+        }
 
         $IDAddressMap{ $ID } = $Address;
     }
