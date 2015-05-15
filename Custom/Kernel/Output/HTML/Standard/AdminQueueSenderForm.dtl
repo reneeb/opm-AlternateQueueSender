@@ -73,10 +73,10 @@
                         <div class="Clear"></div>
 
                         <label for="Template">
-                            [% Translate("Template for Realname") | html %]:
+                            $Text{"Template for Realname"}
                         </label>
                         <div class="Field">
-                            <input type="text" name="Template" value="[% Data.Template | html %]" />
+                            <input type="text" name="Template" value="$QData{"Template"}" />
                         </div>
                         <div class="Clear"></div>
 
