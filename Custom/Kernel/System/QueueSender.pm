@@ -191,12 +191,9 @@ Returns the template for a given queue.
 sub QueueSenderTemplateGet {
     my ($Self, %Param) = @_;
 
-    my $LogObject = $Kernel::OM->Get('Kernel::System::Log');
-    my $DBObject  = $Kernel::OM->Get('Kernel::System::DB');
-
     # check needed stuff
     if ( !$Param{QueueID} ) {
-        $LogObject->Log(
+        $Self->{LogObject}->Log(
             Priority => 'error',
             Message  => 'Need QueueID!',
         );
@@ -204,7 +201,7 @@ sub QueueSenderTemplateGet {
     }
 
     # sql
-    return if !$DBObject->Prepare(
+    return if !$Self->{DBObject}->Prepare(
         SQL  => 'SELECT qs.template FROM ps_queue_sender qs '
             . '    WHERE qs.queue_id = ?',
         Bind  => [ \$Param{QueueID} ],
@@ -212,7 +209,7 @@ sub QueueSenderTemplateGet {
     );
 
     my $Template;
-    while ( my @Data = $DBObject->FetchrowArray() ) {
+    while ( my @Data = $Self->{DBObject}->FetchrowArray() ) {
         $Template = $Data[0];
     }
 

@@ -17,6 +17,7 @@ use Kernel::System::Ticket;
 use Kernel::System::Time;
 use Kernel::System::DB;
 use Kernel::System::Queue;
+use Kernel::System::User;
 use Kernel::System::QueueSender;
 use Kernel::System::SystemAddress;
 
@@ -44,6 +45,7 @@ sub new {
     $Self->{TimeObject}          = $Param{TimeObject}   || Kernel::System::Time->new( %{$Self} );
     $Self->{DBObject}            = $Param{DBObject}     || Kernel::System::DB->new( %{$Self} );
     $Self->{QueueObject}         = $Param{QueueObject}  || Kernel::System::Queue->new( %{$Self} );
+    $Self->{UserObject}          = $Param{UserObject}   || Kernel::System::User->new( %{$Self} );
     $Self->{QueueSenderObject}   = Kernel::System::QueueSender->new( %{$Self} );
     $Self->{SystemAddressObject} = Kernel::System::SystemAddress->new( %{$Self} );
 
@@ -75,14 +77,13 @@ sub Run {
     );
 
     my $QueueSystemAddressID = $Queue{SystemAddressID};
-    my $Template             = $QueueSenderObject->QueueSenderTemplateGet( QueueID => $Ticket{QueueID} );
+    my $Template             = $Self->{QueueSenderObject}->QueueSenderTemplateGet( QueueID => $Ticket{QueueID} );
 
     my %IDAddressMap;
     my %SenderAddresses;
 
     if ( $Template ) {
-        my $UserObject = $Kernel::OM->Get('Kernel::System::User');
-        my %UserData   = $UserObject->GetUserData(
+        my %UserData   = $Self->{UserObject}->GetUserData(
             UserID => $Self->{UserID},
         );
 
