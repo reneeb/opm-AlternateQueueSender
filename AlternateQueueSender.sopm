@@ -35,7 +35,7 @@
         </TableCreate>
     </DatabaseInstall>
     <DatabaseUpgrade Type="post">
-        <TableAlter Name="ps_queue_sender" Version="4.0.3">
+        <TableAlter Name="ps_queue_sender" Version="3.3.5">
             <ColumnAdd Name="template" Required="false" Type="VARCHAR" Size="150" />
         </TableAlter>
     </DatabaseUpgrade>

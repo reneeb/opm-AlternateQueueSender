@@ -41,7 +41,7 @@
         },
         {
             "type": "ColumnAdd",
-            "version": "4.0.3",
+            "version": "3.3.5",
             "name": "ps_queue_sender",
             "columns": [
                 { "name": "template", "required": "false", "type": "VARCHAR", "size": 150 }
