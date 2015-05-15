@@ -22,6 +22,7 @@
                 { "name": "id", "required": "true", "auto_increment": "true", "type": "INTEGER", "primary_key": "true" },
                 { "name": "queue_id", "required": "true", "type": "INTEGER" },
                 { "name": "sender_address_id", "required": "true", "type": "SMALLINT" },
+                { "name": "template", "required": "false", "type": "VARCHAR", "size": 150 }
             ],
             "keys" : [
                 {
