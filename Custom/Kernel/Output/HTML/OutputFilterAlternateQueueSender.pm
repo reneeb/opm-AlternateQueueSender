@@ -26,7 +26,10 @@ sub new {
     my ( $Type, %Param ) = @_;
 
     # allocate new hash for object
-    my $Self = {};
+    my $Self = {
+        UserID => $Param{UserID},
+    };
+
     bless( $Self, $Type );
 
     # get needed objects
@@ -60,7 +63,7 @@ sub Run {
     my ($TicketID) = $Self->{ParamObject}->GetParam( Param => 'TicketID' );
     my %Ticket     = $Self->{TicketObject}->TicketGet(
         TicketID => $TicketID,
-        UserID   => $Param{UserID},
+        UserID   => $Self->{UserID},
     );
 
     my %List = $Self->{QueueSenderObject}->QueueSenderGet( QueueID => $Ticket{QueueID} );
@@ -80,13 +83,10 @@ sub Run {
     if ( $Template ) {
         my $UserObject = $Kernel::OM->Get('Kernel::System::User');
         my %UserData   = $UserObject->GetUserData(
-            UserID => $Param{UserID},
+            UserID => $Self->{UserID},
         );
 
-        for my $Key ( keys %UserData ) {
-            my $Check = uc $Key;
-            $Template =~ s{<OTRS_$Check>}{$UserData{$Key}}xsmg
-        }
+        $Template =~ s{<OTRS_([^>]+)>}{$UserData{$1}}xsmg;
     }
 
     for my $ID ( keys %List, $Queue{SystemAddressID} ) {
