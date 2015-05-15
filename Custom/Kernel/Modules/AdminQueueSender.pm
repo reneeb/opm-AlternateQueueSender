@@ -196,7 +196,11 @@ sub _MaskQueueSenderForm {
     if ( $Self->{Subaction} eq 'Edit' ) {
         my %QueueSender = $QueueSenderObject->QueueSenderGet( QueueID => $Param{QueueID} );
 
-        $Param{SystemAddressIDs} = [ keys %QueueSender ];
+        $Param{SystemAddressIDs} = [ keys %QueueSender ] if !$Param{SystemAddressIDs};
+
+        if ( !$Param{Template} ) {
+            $Param{Template} = $QueueSenderObject->QueueSenderTemplateGet( QueueID => $Param{QueueID} );
+        }
     }
 
     if ( $Param{QueueID} ) {
