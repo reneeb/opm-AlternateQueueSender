@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <otrs_package version="1.0">
-    <!-- GENERATED WITH OTRS::OPM::Maker::Command::sopm (1.21) -->
+    <!-- GENERATED WITH OTRS::OPM::Maker::Command::sopm (1.29) -->
     <Name>AlternateQueueSender</Name>
     <Version>3.3.4</Version>
     <Framework>3.3.x</Framework>
@@ -25,6 +25,7 @@
             <Column Name="id" Required="true" Type="INTEGER" AutoIncrement="true" PrimaryKey="true" />
             <Column Name="queue_id" Required="true" Type="INTEGER" />
             <Column Name="sender_address_id" Required="true" Type="SMALLINT" />
+            <Column Name="template" Required="false" Type="VARCHAR" Size="150" />
             <ForeignKey ForeignTable="queue">
                 <Reference Local="queue_id" Foreign="id" />
             </ForeignKey>
@@ -33,6 +34,11 @@
             </ForeignKey>
         </TableCreate>
     </DatabaseInstall>
+    <DatabaseUpgrade Type="post">
+        <TableAlter Name="ps_queue_sender" Version="4.0.3">
+            <ColumnAdd Name="template" Required="false" Type="VARCHAR" Size="150" />
+        </TableAlter>
+    </DatabaseUpgrade>
     <DatabaseUninstall Type="pre">
         <TableDrop Name="ps_queue_sender" />
     </DatabaseUninstall>
