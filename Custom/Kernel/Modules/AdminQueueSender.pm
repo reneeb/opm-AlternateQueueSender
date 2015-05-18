@@ -170,7 +170,14 @@ sub Run {
 
     elsif ( $Self->{Subaction} eq 'Delete' ) {
         $QueueSenderObject->QueueSenderDelete( %GetParam );
-        return $LayoutObject->Redirect( OP => "Action=AdminQueueSender" );
+
+        # send JSON response
+        return $LayoutObject->Attachment(
+            ContentType => 'application/json; charset=' . $LayoutObject->{Charset},
+            Content     => '{"Success":1}',
+            Type        => 'inline',
+            NoCache     => 1,
+        );
     }
 
     # ------------------------------------------------------------ #
@@ -269,6 +276,10 @@ sub _MaskQueueSenderForm {
             $Row{Queue}   = $Queue;
             $Row{QueueID} = $QueueSenderList{$Queue};
             $Row{Sender}  = join ', ', sort values %QueueSender;
+
+            $Row{Template} = $QueueSenderObject->QueueSenderTemplateGet(
+                QueueID => $QueueSenderList{$Queue},
+            );
 
             $LayoutObject->Block(
                 Name => 'QueueSenderRow',
