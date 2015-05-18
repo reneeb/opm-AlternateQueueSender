@@ -35,13 +35,14 @@
                         <tr>
                             <th>[% Translate("Queue") | html %]</th>
                             <th>[% Translate("Sender") | html %]</th>
+                            <th>[% Translate("Template") | html %]</th>
                             <th>[% Translate("Action") | html %]</th>
                         </tr>
                     </thead>
                     <tbody>
 [% RenderBlockStart("NoQueueSenderFound") %]
                         <tr>
-                            <td colspan="2">[% Translate("No matches found.") | html %]</td>
+                            <td colspan="4">[% Translate("No matches found.") | html %]</td>
                         </tr>
 [% RenderBlockEnd("NoQueueSenderFound") %]
 [% RenderBlockStart("QueueSenderRow") %]
@@ -53,12 +54,10 @@
                                 [% Data.Sender | html %]
                             </td>
                             <td>
-                                <a href="[% Env("Baselink") %]Action=AdminQueueSender;Subaction=Edit;QueueID=[% Data.QueueID | uri %]">
-                                [% Translate("edit") | html %]
-                                </a> |
-                                <a href="[% Env("Baselink") %]Action=AdminQueueSender;Subaction=Delete;QueueID=[% Data.QueueID | uri %]">
-                                [% Translate("delete") | html %]
-                                </a>
+                                <a href="[% Env("Baselink") %]Action=AdminQueueSender;Subaction=Edit;QueueID=[% Data.QueueID | uri %]"  class="CallForAction Center">
+                                <span>[% Translate("edit") | html %]</span>
+                                </a> 
+                                <a href="#" id="QueueDelete-[% Data.QueueID | uri %]" class="CallForAction Trash Center QueueDelete" data-dialog-element="DeleteConfirmationDialog" data-dialog-title="[% Translate("Delete QueueSender") | html %]" data-id="[% Data.QueueID | uri %]"><span>[% Translate("Delete") | html %]</span></a>
                             </td>
                         </tr>
 [% RenderBlockEnd("QueueSenderRow") %]
@@ -69,3 +68,28 @@
     </div>
     <div class="Clear"></div>
 </div>
+
+
+<div id="Dialogs" class="Hidden">
+    <div id="DeleteConfirmationDialog">
+        <p>$Text{"Do you really want to delete this Queue <-> Sender relations?"}</p>
+        <p class="SpacingTop"><strong>$QData{"Name"}</strong></p>
+    </div>
+</div>
+
+[% WRAPPER JSOnDocumentComplete %]
+<script type="text/javascript">//<![CDATA[
+//Localizations
+PS.Admin.AlternateQueueSender.Localization = {
+    CancelMsg:      "$Text{"Cancel"}",
+    DeleteMsg:      "$Text{"Delete"}",
+};
+
+$('.QueueDelete').bind('click', function (Event) {
+    PS.Admin.AlternateQueueSender.ShowDeleteConfirmationDialog($(Event.target).closest('a'));
+    Event.stopPropagation();
+    return false;
+});
+//]]></script>
+
+[% END %]
