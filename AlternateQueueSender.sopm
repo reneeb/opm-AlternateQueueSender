@@ -2,7 +2,7 @@
 <otrs_package version="1.0">
     <!-- GENERATED WITH OTRS::OPM::Maker::Command::sopm (1.29) -->
     <Name>AlternateQueueSender</Name>
-    <Version>3.3.5</Version>
+    <Version>3.3.6</Version>
     <Framework>3.3.x</Framework>
     <Vendor>Perl-Services.de</Vendor>
     <URL>http://www.perl-services.de</URL>
@@ -19,6 +19,7 @@
         <File Permission="644" Location="Kernel/Language/de_AlternateQueueSender.pm" />
         <File Permission="644" Location="doc/AlternateQueueSender.json" />
         <File Permission="644" Location="doc/en/AlternateQueueSender.pod" />
+        <File Permission="644" Location="var/httpd/htdocs/js/PS.Admin.AlternateQueueSender.js" />
     </Filelist>
     <DatabaseInstall Type="post">
         <TableCreate Name="ps_queue_sender">

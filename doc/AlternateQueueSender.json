@@ -1,6 +1,6 @@
 {
     "name": "AlternateQueueSender",
-    "version": "3.3.5",
+    "version": "3.3.6",
     "framework": [
         "3.3.x"
     ],
