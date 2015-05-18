@@ -17,6 +17,9 @@
                     <Block>System</Block>
                     <Prio>1123</Prio>
                 </NavBarModule>
+                <Loader>
+                    <JavaScript>PS.Admin.AlternateQueueSender.js</JavaScript>
+                </Loader>
             </FrontendModuleReg>
         </Setting>
     </ConfigItem>

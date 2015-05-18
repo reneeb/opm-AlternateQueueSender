@@ -1,6 +1,6 @@
 # --
 # Kernel/Language/de_AlternateQueueSender.pm - the german translation of AlternateQueueSender
-# Copyright (C) 2014 Perl-Services, http://www.perl-services.de
+# Copyright (C) 2015 Perl-Services, http://www.perl-services.de
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -14,8 +14,6 @@ use warnings;
 
 use utf8;
 
-our $VERSION = '0.01';
-
 sub Data {
     my $Self = shift;
 
@@ -28,6 +26,10 @@ sub Data {
     $Lang->{'QueueSender Management'} = 'Alternative Queue-Absender verwalten';
     $Lang->{'edit'}                   = 'bearbeiten';
     $Lang->{'Template for Realname'}  = 'Template für den Anzeigenamen';
+    $Lang->{'Delete QueueSender'}     = 'Queue-Absender löschen';
+
+    $Lang->{'Do you really want to delete this Queue <-> Sender relations?'} =
+        'Wollen Sie wirkliche diese Queue-Absender löschen?';
 
     return 1;
 }
