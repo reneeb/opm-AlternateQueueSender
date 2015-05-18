@@ -35,13 +35,14 @@
                         <tr>
                             <th>$Text{"Queue"}</th>
                             <th>$Text{"Sender"}</th>
+                            <th>$Text{"Template"}</th>
                             <th>$Text{"Action"}</th>
                         </tr>
                     </thead>
                     <tbody>
 <!-- dtl:block:NoQueueSenderFound -->
                         <tr>
-                            <td colspan="2">$Text{"No matches found."}</td>
+                            <td colspan="4">$Text{"No matches found."}</td>
                         </tr>
 <!-- dtl:block:NoQueueSenderFound -->
 <!-- dtl:block:QueueSenderRow -->
@@ -53,12 +54,13 @@
                                 $QData{"Sender"}
                             </td>
                             <td>
-                                <a href="$Env{"Baselink"}Action=AdminQueueSender;Subaction=Edit;QueueID=$LQData{"QueueID"}">
-                                $Text{"edit"}
-                                </a> |
-                                <a href="$Env{"Baselink"}Action=AdminQueueSender;Subaction=Delete;QueueID=$LQData{"QueueID"}">
-                                $Text{"delete"}
-                                </a>
+                                $QData{"Template"}
+                            </td>
+                            <td>
+                                <a href="$Env{"Baselink"}Action=AdminQueueSender;Subaction=Edit;QueueID=$LQData{"QueueID"}" class="CallForAction Center">
+                                <span>$Text{"edit"}</span>
+                                </a> 
+                                <a href="#" id="QueueDelete-$LQData{"QueueID"}" class="CallForAction Trash Center QueueDelete" data-dialog-element="DeleteConfirmationDialog" data-dialog-title="$Text{"Delete QueueSender"}" data-id="$QData{"QueueID"}"><span>$Text{"Delete"}</span></a>
                             </td>
                         </tr>
 <!-- dtl:block:QueueSenderRow -->
@@ -69,3 +71,27 @@
     </div>
     <div class="Clear"></div>
 </div>
+
+<div id="Dialogs" class="Hidden">
+    <div id="DeleteConfirmationDialog">
+        <p>$Text{"Do you really want to delete this Queue <-> Sender relations?"}</p>
+        <p class="SpacingTop"><strong>$QData{"Name"}</strong></p>
+    </div>
+</div>
+
+<!-- dtl:js_on_document_complete -->
+<script type="text/javascript">//<![CDATA[
+//Localizations
+PS.Admin.AlternateQueueSender.Localization = {
+    CancelMsg:      "$Text{"Cancel"}",
+    DeleteMsg:      "$Text{"Delete"}",
+};
+
+$('.QueueDelete').bind('click', function (Event) {
+    PS.Admin.AlternateQueueSender.ShowDeleteConfirmationDialog($(Event.target).closest('a'));
+    Event.stopPropagation();
+    return false;
+});
+//]]></script>
+
+<!-- dtl:js_on_document_complete -->
