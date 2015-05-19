@@ -51,7 +51,9 @@
                                 [% Data.Queue | html %]
                             </td>
                             <td>
-                                [% Data.Sender | html %]
+[% RenderBlockStart("Sender") %]
+                                [% Data.Realname | html %] - [% Data.Sender | html %]<br />
+[% RenderBlockEnd("Sender") %]
                             </td>
                             <td>
                                 <a href="[% Env("Baselink") %]Action=AdminQueueSender;Subaction=Edit;QueueID=[% Data.QueueID | uri %]"  class="CallForAction Center">
