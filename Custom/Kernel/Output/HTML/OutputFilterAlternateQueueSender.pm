@@ -110,12 +110,7 @@ sub Run {
 
     return if !%SenderAddresses;
 
-    my %Queue = $Self->{QueueObject}->QueueGet(
-        ID => $Ticket{QueueID},
-    );
-
-    my $QueueSystemAddressID = $Queue{SystemAddressID};
-    my $SelectedAddress      = $IDAddressMap{ $QueueSystemAddressID };
+    my $SelectedAddress = $IDAddressMap{ $QueueSystemAddressID };
         
     my $Select = $Self->{LayoutObject}->BuildSelection(
         Data          => \%SenderAddresses,
