@@ -51,7 +51,9 @@
                                 $QData{"Queue"}
                             </td>
                             <td>
-                                $QData{"Sender"}
+<!-- dtl:block:Sender -->
+                                $QData{"Realname"} - $QData{"Sender"}<br />
+<!-- dtl:block:Sender -->
                             </td>
                             <td>
                                 $QData{"Template"}
