@@ -275,6 +275,15 @@ sub _MaskQueueSenderForm {
             $Row{Queue}   = $Queue;
             $Row{QueueID} = $QueueSenderList{$Queue};
 
+            $Row{Template} = $Self->{QueueSenderObject}->QueueSenderTemplateGet(
+                QueueID => $QueueSenderList{$Queue},
+            );
+
+            $Self->{LayoutObject}->Block(
+                Name => 'QueueSenderRow',
+                Data => \%Row,
+            );
+
             for my $Sender ( sort values %QueueSender ) {
                 $Self->{LayoutObject}->Block(
                     Name => 'Sender',
@@ -284,15 +293,6 @@ sub _MaskQueueSenderForm {
                     },
                 );
             }
-
-            $Row{Template} = $Self->{QueueSenderObject}->QueueSenderTemplateGet(
-                QueueID => $QueueSenderList{$Queue},
-            );
-
-            $Self->{LayoutObject}->Block(
-                Name => 'QueueSenderRow',
-                Data => \%Row,
-            );
         }
     }
 
