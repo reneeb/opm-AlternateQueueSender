@@ -236,6 +236,7 @@ sub _MaskQueueSenderForm {
 
     my %SystemAddresses = $Self->{SystemAddressObject}->SystemAddressList( Valid => 1 );
     my %SystemAddressesToShow;
+    my %SystemAddressInfo;
 
     for my $AddressID ( keys %SystemAddresses ) {
         my %Info = $Self->{SystemAddressObject}->SystemAddressGet(
@@ -243,6 +244,7 @@ sub _MaskQueueSenderForm {
         );
 
         $SystemAddressesToShow{$AddressID} = sprintf "%s - %s", $Info{Realname}, $Info{Name};
+        $SystemAddressInfo{ $Info{Name} }  = $Info{Realname};
     }
 
     $Param{SystemAddressSelect} = $Self->{LayoutObject}->BuildSelection(
@@ -272,7 +274,16 @@ sub _MaskQueueSenderForm {
 
             $Row{Queue}   = $Queue;
             $Row{QueueID} = $QueueSenderList{$Queue};
-            $Row{Sender}  = join ', ', sort values %QueueSender;
+
+            for my $Sender ( sort values %QueueSender ) {
+                $Self->{LayoutObject}->Block(
+                    Name => 'Sender',
+                    Data => {
+                        Sender   => $Sender,
+                        Realname => $SystemAddressInfo{$Sender} || '',
+                    },
+                );
+            }
 
             $Row{Template} = $Self->{QueueSenderObject}->QueueSenderTemplateGet(
                 QueueID => $QueueSenderList{$Queue},
