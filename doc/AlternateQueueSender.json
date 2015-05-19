@@ -1,6 +1,6 @@
 {
     "name": "AlternateQueueSender",
-    "version": "4.0.4",
+    "version": "4.0.5",
     "framework": [
         "4.0.x"
     ],
