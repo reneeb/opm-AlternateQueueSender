@@ -88,8 +88,15 @@ sub Run {
             }
         }
 
-        if ( !@{$GetParam{SystemAddressIDs}} ) {
+        if ( !@{$GetParam{SystemAddressIDs}} && !$GetParam{QueueID} ) {
             $Errors{ 'SystemAddressIDsInvalid' } = 'ServerError';
+        }
+        elsif ( !@{$GetParam{SystemAddressIDs}} ) {
+            my %Queue = $Self->{QueueObject}->QueueGet(
+                ID => $GetParam{QueueID},
+            );
+        
+            push @{$GetParam{SystemAddressIDs}}, $Queue{SystemAddressID};
         }
 
         if ( %Errors ) {
@@ -138,8 +145,15 @@ sub Run {
             }
         }
 
-        if ( !@{$GetParam{SystemAddressIDs}} ) {
+        if ( !@{$GetParam{SystemAddressIDs}} && !$GetParam{QueueID} ) {
             $Errors{ 'SystemAddressIDsInvalid' } = 'ServerError';
+        }
+        elsif ( !@{$GetParam{SystemAddressIDs}} ) {
+            my %Queue = $Self->{QueueObject}->QueueGet(
+                ID => $GetParam{QueueID},
+            );
+        
+            push @{$GetParam{SystemAddressIDs}}, $Queue{SystemAddressID};
         }
 
         if ( %Errors ) {
