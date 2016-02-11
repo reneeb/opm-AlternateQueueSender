@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <otrs_package version="1.0">
-    <!-- GENERATED WITH OTRS::OPM::Maker::Command::sopm (1.29) -->
+    <!-- GENERATED WITH OTRS::OPM::Maker::Command::sopm (1.33) -->
     <Name>AlternateQueueSender</Name>
-    <Version>4.0.8</Version>
-    <Framework>4.0.x</Framework>
+    <Version>5.0.1</Version>
+    <Framework>5.0.x</Framework>
     <Vendor>Perl-Services.de</Vendor>
     <URL>http://www.perl-services.de</URL>
     <Description Lang="de">Möglichkeit mehr als eine Absenderadresse pro Queue zu haben</Description>
@@ -11,9 +11,9 @@
     <License>GNU AFFERO GENERAL PUBLIC LICENSE Version 3, November 2007</License>
     <Filelist>
         <File Permission="644" Location="Custom/Kernel/Modules/AdminQueueSender.pm" />
-        <File Permission="644" Location="Custom/Kernel/Output/HTML/OutputFilterAlternateQueueSender.pm" />
-        <File Permission="644" Location="Custom/Kernel/Output/HTML/Standard/AdminQueueSenderForm.tt" />
-        <File Permission="644" Location="Custom/Kernel/Output/HTML/Standard/AdminQueueSenderList.tt" />
+        <File Permission="644" Location="Custom/Kernel/Output/HTML/FilterElementPost/AlternateQueueSender.pm" />
+        <File Permission="644" Location="Custom/Kernel/Output/HTML/Templates/Standard/AdminQueueSenderForm.tt" />
+        <File Permission="644" Location="Custom/Kernel/Output/HTML/Templates/Standard/AdminQueueSenderList.tt" />
         <File Permission="644" Location="Custom/Kernel/System/QueueSender.pm" />
         <File Permission="644" Location="Kernel/Config/Files/AlternateQueueSender.xml" />
         <File Permission="644" Location="Kernel/Language/de_AlternateQueueSender.pm" />
