@@ -11,7 +11,7 @@
                 <Title>Queue Sender</Title>
                 <NavBarName>Admin</NavBarName>
                 <NavBarModule>
-                    <Module>Kernel::Output::HTML::NavBarModuleAdmin</Module>
+                    <Module>Kernel::Output::HTML::NavBar::ModuleAdmin</Module>
                     <Name Translatable="1">Queue Sender</Name>
                     <Description Translatable="1">Create and manage queue sender.</Description>
                     <Block>System</Block>
@@ -29,7 +29,7 @@
         <SubGroup>OutputFilter</SubGroup>
         <Setting>
             <Hash>
-                <Item Key="Module">Kernel::Output::HTML::OutputFilterAlternateQueueSender</Item>
+                <Item Key="Module">Kernel::Output::HTML::FilterElementPost::AlternateQueueSender</Item>
                 <Item Key="Debug">0</Item>
                 <Item Key="Templates">
                     <Hash>
