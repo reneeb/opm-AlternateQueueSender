@@ -77,6 +77,8 @@
                         </label>
                         <div class="Field">
                             <input type="text" name="TemplateAddress" value="[% Data.TemplateAddress | html %]" />
+                            <input type="hidden" name="IsDefault" id="IsDefault" value="[% Data.IsDefault | html %]" />
+                            <input type="checkbox" name="IsDefaultCheckbox" id="IsDefaultCheckbox" [% Data.IsDefaultChecked %]>
                         </div>
                         <div class="Clear"></div>
 
@@ -101,3 +103,11 @@
     </div>
     <div class="Clear"></div>
 </div>
+[% WRAPPER JSOnDocumentComplete %]
+<script type="text/javascript">//<![CDATA[
+$('#IsDefaultCheckbox').bind('change', function() {
+    var Value = $(this).is(':checked') ? 1 : 0;
+    $('#IsDefault').val( Value );
+});
+//]]></script>
+[% END %]

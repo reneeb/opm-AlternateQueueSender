@@ -40,10 +40,11 @@ sub Run {
 
     my %GetParam = (
         SystemAddressIDs => [ $ParamObject->GetArray( Param => 'SystemAddressIDs' ) ],
-        QueueID          => $ParamObject->GetParam( Param => 'QueueID' ),
-        Template         => $ParamObject->GetParam( Param => 'Template' ),
-        TemplateAddress  => $ParamObject->GetParam( Param => 'TemplateAddress' ),
     );
+
+    for my $Key ( qw/QueueID Template TemplateAddress IsDefault/ ) {
+        $GetParam{$Key} = $ParamObject->GetParam( Param => $Key );
+    }
 
     # ------------------------------------------------------------ #
     # get data 2 form
@@ -117,6 +118,8 @@ sub Run {
                 SystemAddressID => $ID,
                 QueueID         => $GetParam{QueueID},
                 Template        => $GetParam{Template},
+                TemplateAddress => $GetParam{TemplateAddress},
+                IsDefault       => $GetParam{IsDefault},
             );
         }
 
@@ -171,6 +174,7 @@ sub Run {
                 QueueID         => $GetParam{QueueID},
                 Template        => $GetParam{Template},
                 TemplateAddress => $GetParam{TemplateAddress},
+                IsDefault       => $GetParam{IsDefault},
             );
         }
 
@@ -221,6 +225,10 @@ sub _MaskQueueSenderForm {
         if ( !$Param{TemplateAddress} ) {
             $Param{TemplateAddress} = $QueueSenderObject->QueueSenderTemplateAddressGet( QueueID => $Param{QueueID} );
         }
+
+        if ( !defined $Param{IsDefault} ) {
+            $Param{IsDefault} = $QueueSenderObject->QueueSenderIsDefault( QueueID => $Param{QueueID} );
+        }
     }
 
     if ( $Param{QueueID} ) {
@@ -270,6 +278,8 @@ sub _MaskQueueSenderForm {
         Multiple   => 1,
         SelectedID => $Param{SystemAddressIDs},
     );
+
+    $Param{IsDefaultChecked} = $Param{IsDefault} ? 'checked="checked"' : '';
 
     if ( $Self->{Subaction} ne 'Edit' && $Self->{Subaction} ne 'Add' ) {
 

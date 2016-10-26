@@ -70,14 +70,17 @@ sub QueueSenderAdd {
         }
     }
 
+    $Param{IsDefault} ||= 0;
+
     # insert queue address
     return if !$DBObject->Do(
-        SQL => 'INSERT INTO ps_queue_sender (queue_id, sender_address_id, template, template_address) VALUES (?,?,?,?)',
+        SQL => 'INSERT INTO ps_queue_sender (queue_id, sender_address_id, template, template_address, is_default) VALUES (?,?,?,?,?)',
         Bind => [
             \$Param{QueueID},
             \$Param{SystemAddressID},
             \$Param{Template},
             \$Param{TemplateAddress},
+            \$Param{IsDefault},
         ],
     );
 
@@ -228,6 +231,47 @@ sub QueueSenderTemplateAddressGet {
     }
 
     return $Template;
+}
+
+=item QueueSenderIsDefault()
+
+Returns the template for a given queue.
+
+    my $Template = $Object->QueueSenderIsDefault(
+        QueueID => 123,
+    );
+
+=cut
+
+sub QueueSenderIsDefault {
+    my ($Self, %Param) = @_;
+
+    my $LogObject = $Kernel::OM->Get('Kernel::System::Log');
+    my $DBObject  = $Kernel::OM->Get('Kernel::System::DB');
+
+    # check needed stuff
+    if ( !$Param{QueueID} ) {
+        $LogObject->Log(
+            Priority => 'error',
+            Message  => 'Need QueueID!',
+        );
+        return;
+    }
+
+    # sql
+    return if !$DBObject->Prepare(
+        SQL  => 'SELECT qs.is_default FROM ps_queue_sender qs '
+            . '    WHERE qs.queue_id = ?',
+        Bind  => [ \$Param{QueueID} ],
+        Limit => 1,
+    );
+
+    my $IsDefault;
+    while ( my @Data = $DBObject->FetchrowArray() ) {
+        $IsDefault = $Data[0];
+    }
+
+    return $IsDefault;
 }
 
 =item QueueSenderDelete()
