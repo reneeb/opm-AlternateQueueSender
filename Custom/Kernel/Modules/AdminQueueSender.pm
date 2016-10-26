@@ -1,6 +1,5 @@
 # --
-# Kernel/Modules/AdminQueueSender.pm - administration of queue senders
-# Copyright (C) 2014 Perl-Services.de, http://www.perl-services.de
+# Copyright (C) 2014 - 2016 Perl-Services.de, http://www.perl-services.de
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -11,8 +10,6 @@ package Kernel::Modules::AdminQueueSender;
 
 use strict;
 use warnings;
-
-our $VERSION = 0.02;
 
 our @ObjectDepedencies = qw(
     Kernel::System::QueueSender
@@ -30,11 +27,6 @@ sub new {
     my $Self = {%Param};
     bless( $Self, $Type );
 
-    # check all needed objects
-    my @Objects = qw(
-        ParamObject DBObject LayoutObject ConfigObject LogObject TicketObject 
-    );
-
     return $Self;
 }
 
@@ -50,6 +42,7 @@ sub Run {
         SystemAddressIDs => [ $ParamObject->GetArray( Param => 'SystemAddressIDs' ) ],
         QueueID          => $ParamObject->GetParam( Param => 'QueueID' ),
         Template         => $ParamObject->GetParam( Param => 'Template' ),
+        TemplateAddress  => $ParamObject->GetParam( Param => 'TemplateAddress' ),
     );
 
     # ------------------------------------------------------------ #
@@ -177,6 +170,7 @@ sub Run {
                 SystemAddressID => $ID,
                 QueueID         => $GetParam{QueueID},
                 Template        => $GetParam{Template},
+                TemplateAddress => $GetParam{TemplateAddress},
             );
         }
 
@@ -222,6 +216,10 @@ sub _MaskQueueSenderForm {
 
         if ( !$Param{Template} ) {
             $Param{Template} = $QueueSenderObject->QueueSenderTemplateGet( QueueID => $Param{QueueID} );
+        }
+
+        if ( !$Param{TemplateAddress} ) {
+            $Param{TemplateAddress} = $QueueSenderObject->QueueSenderTemplateAddressGet( QueueID => $Param{QueueID} );
         }
     }
 
