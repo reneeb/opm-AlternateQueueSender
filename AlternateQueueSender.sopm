@@ -27,6 +27,7 @@
             <Column Name="queue_id" Required="true" Type="INTEGER" />
             <Column Name="sender_address_id" Required="true" Type="SMALLINT" />
             <Column Name="template" Required="false" Type="VARCHAR" Size="150" />
+            <Column Name="template_address" Required="false" Type="VARCHAR" Size="150" />
             <ForeignKey ForeignTable="queue">
                 <Reference Local="queue_id" Foreign="id" />
             </ForeignKey>
@@ -38,6 +39,9 @@
     <DatabaseUpgrade Type="post">
         <TableAlter Name="ps_queue_sender" Version="4.0.3">
             <ColumnAdd Name="template" Required="false" Type="VARCHAR" Size="150" />
+        </TableAlter>
+        <TableAlter Name="ps_queue_sender" Version="5.0.2">
+            <ColumnAdd Name="template_address" Required="false" Type="VARCHAR" Size="150" />
         </TableAlter>
     </DatabaseUpgrade>
     <DatabaseUninstall Type="pre">

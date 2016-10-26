@@ -1,6 +1,5 @@
 # --
-# Kernel/System/QueueSender.pm - All QueueSender related functions should be here eventually
-# Copyright (C) 2014 Perl-Services.de, http://www.perl-services.de
+# Copyright (C) 2014 - 2016 Perl-Services.de, http://www.perl-services.de
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -11,8 +10,6 @@ package Kernel::System::QueueSender;
 
 use strict;
 use warnings;
-
-our $VERSION = 0.02;
 
 our @ObjectDependencies = qw(
     Kernel::System::Log
@@ -75,11 +72,12 @@ sub QueueSenderAdd {
 
     # insert queue address
     return if !$DBObject->Do(
-        SQL => 'INSERT INTO ps_queue_sender (queue_id, sender_address_id, template) VALUES (?,?,?)',
+        SQL => 'INSERT INTO ps_queue_sender (queue_id, sender_address_id, template, template_address) VALUES (?,?,?,?)',
         Bind => [
             \$Param{QueueID},
             \$Param{SystemAddressID},
             \$Param{Template},
+            \$Param{TemplateAddress},
         ],
     );
 
@@ -137,7 +135,7 @@ sub QueueSenderGet {
 
     # sql
     return if !$DBObject->Prepare(
-        SQL  => 'SELECT qs.queue_id, sender_address_id, value0, qs.template FROM ps_queue_sender qs '
+        SQL  => 'SELECT qs.queue_id, sender_address_id, value0, qs.template, qs.template_address FROM ps_queue_sender qs '
             . '    INNER JOIN system_address sa ON qs.sender_address_id = sa.id WHERE qs.queue_id = ?',
         Bind => [ \$Param{QueueID} ],
     );
@@ -178,6 +176,47 @@ sub QueueSenderTemplateGet {
     # sql
     return if !$DBObject->Prepare(
         SQL  => 'SELECT qs.template FROM ps_queue_sender qs '
+            . '    WHERE qs.queue_id = ?',
+        Bind  => [ \$Param{QueueID} ],
+        Limit => 1,
+    );
+
+    my $Template;
+    while ( my @Data = $DBObject->FetchrowArray() ) {
+        $Template = $Data[0];
+    }
+
+    return $Template;
+}
+
+=item QueueSenderTemplateAddressGet()
+
+Returns the template for a given queue.
+
+    my $Template = $Object->QueueSenderTemplateAddressGet(
+        QueueID => 123,
+    );
+
+=cut
+
+sub QueueSenderTemplateAddressGet {
+    my ($Self, %Param) = @_;
+
+    my $LogObject = $Kernel::OM->Get('Kernel::System::Log');
+    my $DBObject  = $Kernel::OM->Get('Kernel::System::DB');
+
+    # check needed stuff
+    if ( !$Param{QueueID} ) {
+        $LogObject->Log(
+            Priority => 'error',
+            Message  => 'Need QueueID!',
+        );
+        return;
+    }
+
+    # sql
+    return if !$DBObject->Prepare(
+        SQL  => 'SELECT qs.template_address FROM ps_queue_sender qs '
             . '    WHERE qs.queue_id = ?',
         Bind  => [ \$Param{QueueID} ],
         Limit => 1,
