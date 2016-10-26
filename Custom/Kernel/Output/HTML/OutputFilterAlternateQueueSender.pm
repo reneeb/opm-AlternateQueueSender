@@ -1,6 +1,5 @@
 # --
-# Kernel/Output/HTML/OutputFilterAlternateQueueSender.pm
-# Copyright (C) 2014 Perl-Services.de, http://www.perl-services.de/
+# Copyright (C) 2014 - 2016 Perl-Services.de, http://www.perl-services.de/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -53,8 +52,9 @@ sub Run {
 
     my ($TicketID) = $ParamObject->GetParam( Param => 'TicketID' );
     my %Ticket     = $TicketObject->TicketGet(
-        TicketID => $TicketID,
-        UserID   => $Self->{UserID},
+        TicketID      => $TicketID,
+        DynamicFields => 1,
+        UserID        => $Self->{UserID},
     );
 
     my %List = $QueueSenderObject->QueueSenderGet( QueueID => $Ticket{QueueID} );
@@ -68,6 +68,7 @@ sub Run {
     my $QueueSystemAddressID = $Queue{SystemAddressID};
     my $Template             = $QueueSenderObject->QueueSenderTemplateGet( QueueID => $Ticket{QueueID} );
     my $TemplateAddress      = $QueueSenderObject->QueueSenderTemplateAddressGet( QueueID => $Ticket{QueueID} );
+    my $IsDefault            = $QueueSenderObject->QueueSenderIsDefault( QueueID => $Ticket{QueueID} );
 
     my %IDAddressMap;
     my %SenderAddresses;
@@ -80,6 +81,7 @@ sub Run {
 
         $Template =~ s{<OTRS_TICKET_([^>]+)>}{$Ticket{$1}}xmsg;
         $Template =~ s{<OTRS_([^>]+)>}{$UserData{$1}}xsmg;
+        $Template =~ s{<OTRS_([^>]+)>}{}xsmg;
     }
 
     if ( $TemplateAddress ) {
@@ -90,12 +92,16 @@ sub Run {
 
         $TemplateAddress =~ s{<OTRS_TICKET_([^>]+)>}{$Ticket{$1}}xmsg;
         $TemplateAddress =~ s{<OTRS_([^>]+)>}{$UserData{$1}}xsmg;
+        $TemplateAddress =~ s{<OTRS_([^>]+)>}{}xsmg;
 
-        $SenderAddresses{$TemplateAddress} = $TemplateAddress;
+        if ( $TemplateAddress !~ m{\A\@} ) {
 
-        if ( $Template ) {
-            $TemplateAddress = sprintf "%s <%s>", $Template, $TemplateAddress;
             $SenderAddresses{$TemplateAddress} = $TemplateAddress;
+
+            if ( $Template && $TemplateAddress ) {
+                $TemplateAddress = sprintf "%s <%s>", $Template, $TemplateAddress;
+                $SenderAddresses{$TemplateAddress} = $TemplateAddress;
+            }
         }
     }
 
@@ -119,7 +125,11 @@ sub Run {
 
     return if !%SenderAddresses;
 
-    my $SelectedAddress      = $IDAddressMap{ $QueueSystemAddressID };
+    my $SelectedAddress = $IDAddressMap{ $QueueSystemAddressID };
+
+    if ( $TemplateAddress && $IsDefault ) {
+        $SelectedAddress = $TemplateAddress;
+    }
         
     my $Select = $LayoutObject->BuildSelection(
         Data          => \%SenderAddresses,
