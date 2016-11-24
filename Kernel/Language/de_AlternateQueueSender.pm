@@ -1,6 +1,6 @@
 # --
-# Kernel/Language/de_AlternateQueueSender.pm - the german translation of AlternateQueueSender
-# Copyright (C) 2015 Perl-Services, http://www.perl-services.de
+# Kernel/Language/de_AlternateQueueSender.pm - the German translation of AlternateQueueSender
+# Copyright (C) 2015 - 2016 Perl-Services, http://www.perl-services.de
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -21,15 +21,39 @@ sub Data {
 
     return if ref $Lang ne 'HASH';
 
-    $Lang->{'Add Queuesender'}        = 'Neue Queue <-> Sender';
-    $Lang->{'Add/Change QueueSender'} = 'Alternative Queue-Absender hinzufügen/ändern';
-    $Lang->{'QueueSender Management'} = 'Alternative Queue-Absender verwalten';
-    $Lang->{'edit'}                   = 'bearbeiten';
-    $Lang->{'Template for Realname'}  = 'Template für den Anzeigenamen';
-    $Lang->{'Delete QueueSender'}     = 'Queue-Absender löschen';
+    # Custom/Kernel/Output/HTML/Templates/Standard/AdminQueueSenderForm.tt
+    $Lang->{'Queue Sender Management'} = 'Alternative Queue-Absender verwalten';
+    $Lang->{'Actions'} = '';
+    $Lang->{'Go to overview'} = 'Zur Übersicht gehen';
+    $Lang->{'Add/Change Queue Sender'} = 'Alternative Queue-Absender hinzufügen/ändern';
+    $Lang->{'Queue'} = 'Queue';
+    $Lang->{'Queue is mandatory.'} = '';
+    $Lang->{'Sender'} = '';
+    $Lang->{'Please select sender addresses.'} = '';
+    $Lang->{'Alternative Address'} = '';
+    $Lang->{'Make Default Address'} = '';
+    $Lang->{'Alternative Real Name'} = '';
+    $Lang->{'Save'} = '';
+    $Lang->{'or'} = '';
+    $Lang->{'Cancel'} = '';
 
+    # Custom/Kernel/Output/HTML/Templates/Standard/AdminQueueSenderList.tt
+    $Lang->{'Add Queue Sender'} = 'Neue Queue <-> Sender';
+    $Lang->{'List'} = '';
+    $Lang->{'Template'} = '';
+    $Lang->{'Edit'} = 'Bearbeiten';
+    $Lang->{'Edit Queue Sender'} = 'Queue-Absender bearbeiten';
+    $Lang->{'Delete'} = '';
+    $Lang->{'Delete Queue Sender'} = 'Queue-Absender löschen';
+    $Lang->{'No matches found.'} = '';
     $Lang->{'Do you really want to delete this Queue <-> Sender relations?'} =
         'Wollen Sie wirkliche diese Queue-Absender löschen?';
+
+    # Kernel/Config/Files/AlternateQueueSender.xml
+    $Lang->{'Frontend module registration for the queue sender administration.'} = '';
+    $Lang->{'Create and manage queue sender.'} = '';
+    $Lang->{'Queue Sender'} = '';
+    $Lang->{'Module to show the queue sender dropdown.'} = '';
 
     return 1;
 }

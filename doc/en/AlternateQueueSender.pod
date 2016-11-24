@@ -21,10 +21,12 @@ By default the standard queue address is selected.
 
 =head1 SUPPORT & REPOSITORY
 
-If you find a bug or need support, please contact C<< <info@feature-addons.de> >>.
+If you find a bug or need support, please contact E<lt>info@feature-addons.deE<gt>.
 
 You can find the repository at L<http://github.com/reneeb/otrs-AlternateQueueSender>.
 
-=head1 AUTHOR
+=head1 AUTHOR AND LICENSE
 
-Renee Baecker C<< <info@feature-addons.de> >>
+This package was written by Renee Baecker E<lt>info@feature-addons.deE<gt>.
+
+The package is licensed under AGPL. If you did not receive this file, see http://www.gnu.org/licenses/agpl.txt.

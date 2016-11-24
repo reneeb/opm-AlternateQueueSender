@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 <otrs_config version="1.0" init="Application">
     <ConfigItem Name="Frontend::Module###AdminQueueSender" Required="0" Valid="1">
         <Description Translatable="1">Frontend module registration for the queue sender administration.</Description>
@@ -7,8 +7,8 @@
         <Setting>
             <FrontendModuleReg>
                 <Group>admin</Group>
-                <Description>Create and manage queue sender.</Description>
-                <Title>Queue Sender</Title>
+                <Description Translatable="1">Create and manage queue sender.</Description>
+                <Title Translatable="1">Queue Sender</Title>
                 <NavBarName>Admin</NavBarName>
                 <NavBarModule>
                     <Module>Kernel::Output::HTML::NavBar::ModuleAdmin</Module>
@@ -24,7 +24,7 @@
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Frontend::Output::FilterElementPost###OutputFilterAlternateQueueSender" Required="0" Valid="1">
-        <Description Translatable="1">Modul to show the queue sender dropdown.</Description>
+        <Description Translatable="1">Module to show the queue sender dropdown.</Description>
         <Group>AlternateQueueSender</Group>
         <SubGroup>OutputFilter</SubGroup>
         <Setting>
