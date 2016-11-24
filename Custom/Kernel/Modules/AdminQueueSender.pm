@@ -250,6 +250,7 @@ sub _MaskQueueSenderForm {
             HTMLQuote    => 1,
             PossibleNone => 1,
             TreeView     => 1,
+            Class        => 'Modernize',
         );
 
         $LayoutObject->Block(
@@ -277,6 +278,7 @@ sub _MaskQueueSenderForm {
         Size       => 10,
         Multiple   => 1,
         SelectedID => $Param{SystemAddressIDs},
+        Class      => 'Modernize',
     );
 
     $Param{IsDefaultChecked} = $Param{IsDefault} ? 'checked="checked"' : '';

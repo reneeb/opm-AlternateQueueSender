@@ -1,6 +1,6 @@
 {
     "name": "AlternateQueueSender",
-    "version": "5.0.2",
+    "version": "5.0.3",
     "framework": [
         "5.0.x"
     ],
@@ -10,8 +10,9 @@
     },
     "license": "GNU AFFERO GENERAL PUBLIC LICENSE Version 3, November 2007",
     "description" : {
-        "en": "Have more than one sender address for a queue",
-        "de": "Möglichkeit mehr als eine Absenderadresse pro Queue zu haben"
+        "en": "Have more than one sender address for a queue.",
+        "de": "Möglichkeit mehr als eine Absenderadresse pro Queue zu haben.",
+        "hu": "Egynél több küldőcím beállítása egy várólistához."
     },
     "database" : [
        {

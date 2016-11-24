@@ -134,6 +134,7 @@ sub Run {
         Name          => 'From',
         Size          => 1,
         SelectedValue => $SelectedAddress,
+        Class         => 'Modernize',
     );
 
     ${ $Param{Data} } =~ s{(

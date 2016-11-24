@@ -1,0 +1,47 @@
+=encoding utf-8
+
+=head1 NÉV
+
+AlternateQueueSender - alternatív várólistaküldő.
+
+=head1 LEÍRÁS
+
+Alapértelmezetten minden várólistához egyetlen küldőcím van hozzárendelve. Ez 
+általában jó ötlet, de bizonyos körülmények között szüksége lehet 
+várólistánként több küldőcímre.
+
+Példaként a következő két várólistája legyen: „Kelet::Hardver”, amelyhez a 
+„kelet.hardver@vallalat.pelda a küldőcím, és „Nyugat::Hardver”, amelyhez a 
+„nyugat.hardver@vallalat.pelda” a küldőcím. Van egy olyan hardverbeszállítója, 
+ahol az e-mail címei közül csak egy van regisztrálva ügyfélként. Most van egy 
+olyan jegye, amelyet a hardverbeszállítójának szeretne továbbítani. Mit lehet 
+tenni? Két különböző küldőcíme van, de csak az egyik van regisztrálva 
+ügyfélként.
+
+Ezzel a kiegészítővel több küldőcímet is meghatározhat az egyes várólistákhoz. 
+Az ezekben a várólistákban lévő jegyeknél egy legördülő jelenik meg a 
+továbbítás/visszaküldés/válasz párbeszédablakokban (a beállításoktól függően). 
+Most már az ügyintéző kiválaszthatja a küldőcímet.
+
+Alapértelmezetten a szabványos várólistacím lesz kijelölve.
+
+=head1 TÁMOGATÁS ÉS KÓDTÁROLÓ
+
+Ha hibát talál, vagy támogatásra van szüksége, akkor az 
+E<lt>info@feature-addons.deE<gt> címen veheti fel velem a kapcsolatot.
+
+A kódtárolót a L<http://github.com/reneeb/otrs-AlternateQueueSender> címen 
+találhatja meg.
+
+=head1 SZERZŐ ÉS LICENC
+
+Ezt a csomagot Renee Bäcker E<lt>info@feature-addons.deE<gt> készítette.
+
+A csomag AGPL szerint licencelt. Ha nem kapta meg ezt a fájlt, akkor nézze meg 
+a http://www.gnu.org/licenses/agpl.txt oldalon.
+
+=head1 MAGYAR FORDÍTÁS
+
+A magyar fordítást az OTRS-megoldások csapata készítette.
+Copyright (C) 2016 Úr Balázs, L<http://otrs-megoldasok.hu>
+
