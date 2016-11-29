@@ -30,9 +30,13 @@ sub Data {
     $Lang->{'Queue is mandatory.'} = '';
     $Lang->{'Sender'} = '';
     $Lang->{'Please select sender addresses.'} = '';
-    $Lang->{'Alternative Address'} = '';
+    $Lang->{'Template for Address'} = '';
+    $Lang->{'You can use ticket variables to make the address more dynamic.'} = '';
+    $Lang->{'E.g. <OTRS_TICKET_DynamicField_Project>@test.example'} = '';
     $Lang->{'Make Default Address'} = '';
-    $Lang->{'Alternative Real Name'} = '';
+    $Lang->{'Template for Real Name'} = '';
+    $Lang->{'You can use user variables to make the address more dynamic.'} = '';
+    $Lang->{'E.g. <OTRS_UserLastname> for <OTRS_DynamicField_Project>'} = '';
     $Lang->{'Save'} = '';
     $Lang->{'or'} = '';
     $Lang->{'Cancel'} = '';

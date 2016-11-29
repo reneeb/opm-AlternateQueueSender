@@ -76,9 +76,13 @@
                             [% Translate("Template for Address") | html %]:
                         </label>
                         <div class="Field">
-                            <input type="text" name="TemplateAddress" value="[% Data.TemplateAddress | html %]" /><br />
-                            [% Translate("You can use ticket variables to make the address more dynamic") | html %]
-                            [% Translate("E.g. <OTRS_TICKET_DynamicField_Project>@test.example") | html %]
+                            <input type="text" name="TemplateAddress" value="[% Data.TemplateAddress | html %]" />
+                            <p class="FieldExplanation">
+                                [% Translate("You can use ticket variables to make the address more dynamic.") | html %]
+                            </p>
+                            <p class="FieldExplanation">
+                                [% Translate("E.g. <OTRS_TICKET_DynamicField_Project>@test.example") | html %]
+                            </p>
                         </div>
                         <div class="Clear"></div>
 
@@ -95,9 +99,13 @@
                             [% Translate("Template for Real Name") | html %]:
                         </label>
                         <div class="Field">
-                            <input type="text" name="Template" value="[% Data.Template | html %]" /><br />
-                            [% Translate("You can use user variables to make the address more dynamic") | html %]
-                            [% Translate("E.g. <OTRS_UserLastname> for <OTRS_DynamicField_Project>") | html %]
+                            <input type="text" name="Template" value="[% Data.Template | html %]" />
+                            <p class="FieldExplanation">
+                                [% Translate("You can use user variables to make the address more dynamic.") | html %]
+                            </p>
+                            <p class="FieldExplanation">
+                                [% Translate("E.g. <OTRS_UserLastname> for <OTRS_DynamicField_Project>") | html %]
+                            </p>
                         </div>
                         <div class="Clear"></div>
 

@@ -31,9 +31,17 @@ sub Data {
     $Lang->{'Queue is mandatory.'} = 'A várólista kötelező.';
     $Lang->{'Sender'} = 'Küldő';
     $Lang->{'Please select sender addresses.'} = 'Válasszon küldőcímeket.';
-    $Lang->{'Alternative Address'} = 'Alternatív cím';
+    $Lang->{'Template for Address'} = 'Sablon a címhez';
+    $Lang->{'You can use ticket variables to make the address more dynamic.'} =
+        'Használhatja a jegyváltozókat a cím dinamikusabbá tételéhez.';
+    $Lang->{'E.g. <OTRS_TICKET_DynamicField_Project>@test.example'} =
+        'Például <OTRS_TICKET_DynamicField_Project>@teszt.pelda';
     $Lang->{'Make Default Address'} = 'Legyen alapértelmezett cím';
-    $Lang->{'Alternative Real Name'} = 'Alternatív teljes név';
+    $Lang->{'Template for Real Name'} = 'Sablon a teljes névhez';
+    $Lang->{'You can use user variables to make the address more dynamic.'} =
+        'Használhatja a felhasználó-változókat a cím dinamikusabbá tételéhez.';
+    $Lang->{'E.g. <OTRS_UserLastname> for <OTRS_DynamicField_Project>'} =
+        'Például <OTRS_UserLastname> a <OTRS_DynamicField_Project> mezőnél.';
     $Lang->{'Save'} = 'Mentés';
     $Lang->{'or'} = 'vagy';
     $Lang->{'Cancel'} = 'Mégse';
