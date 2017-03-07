@@ -88,7 +88,13 @@ sub Run {
             UserID => $Self->{UserID},
         );
 
-        $TemplateAddress =~ s{<OTRS_TICKET_([^>]+)>}{$Ticket{$1}}xmsg;
+        $TemplateAddress =~ s{<OTRS_TICKET_([^>]+)>}{
+            my $OrigKey         = $1;
+            my ($Key, $Command) = $1 =~ m!\A (.+) \s+ \| \s+ (lc)!x;
+            $Command ?
+                lc $Ticket{$Key} :
+                $Ticket{$OrigKey};
+        }exmsg;
         $TemplateAddress =~ s{<OTRS_([^>]+)>}{$UserData{$1}}xsmg;
         $TemplateAddress =~ s{<OTRS_([^>]+)>}{}xsmg;
 
