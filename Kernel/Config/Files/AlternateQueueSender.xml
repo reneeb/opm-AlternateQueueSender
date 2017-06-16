@@ -41,4 +41,17 @@
             </Hash>
         </Setting>
     </ConfigItem>
+    <ConfigItem Name="Convert::Chars" Required="0" Valid="1">
+        <Description Translatable="1">Mapping what characters should be converted in convert_chars filter.</Description>
+        <Group>AlternateQueueSender</Group>
+        <SubGroup>Core</SubGroup>
+        <Setting>
+            <Hash>
+                <Item Key="ä">ae</Item>
+                <Item Key="ö">oe</Item>
+                <Item Key="ü">ue</Item>
+                <Item Key="ß">ss</Item>
+            </Hash>
+        </Setting>
+    </ConfigItem>
 </otrs_config>

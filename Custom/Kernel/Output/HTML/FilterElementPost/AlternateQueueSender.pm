@@ -88,13 +88,33 @@ sub Run {
             UserID => $Self->{UserID},
         );
 
+        my %Filters = (
+            lc            => sub { lc $_[0] },
+            convert_chars => sub {
+                my $Val = $_[0];
+                my $Map = $ConfigObject->Get('Convert::Chars') || {};
+                $Val =~ s{ $_ }{$Map->{$_}}g for sort keys %{$Map};
+            },
+        );
+
+        my $FiltersRE = join '|', sort keys %Filters;
+
         $TemplateAddress =~ s{<OTRS_TICKET_([^>]+)>}{
-            my $OrigKey         = $1;
-            my ($Key, $Command) = $1 =~ m!\A (.+) \s+ \| \s+ (lc)!x;
-            $Command ?
-                lc $Ticket{$Key} :
-                $Ticket{$OrigKey};
+            my $OrigKey             = $1;
+            my ($Key, $AllCommands) = $1 =~ m!\A ([^\s]+) ((?: \s+ \| \s+ (?:$FiltersRE))+ )!xg;
+
+            my @Commands = split /\s*\|\s*/, $AllCommands;
+
+            my $Replace = $Key ? $Ticket{$Key} : $Ticket{$OrigKey};
+            for my $Command ( @Commands ) {
+                if ( $Command && $Filters{$Command} ) {
+                    $Replace = $Filters{$Command}->( $Replace );
+                }
+            }
+
+            $Replace;
         }exmsg;
+
         $TemplateAddress =~ s{<OTRS_([^>]+)>}{$UserData{$1}}xsmg;
         $TemplateAddress =~ s{<OTRS_([^>]+)>}{}xsmg;
 
