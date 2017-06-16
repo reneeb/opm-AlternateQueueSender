@@ -86,6 +86,7 @@ sub Run {
                 my $Val = $_[0];
                 my $Map = $ConfigObject->Get('Convert::Chars') || {};
                 $Val =~ s{ $_ }{$Map->{$_}}g for sort keys %{$Map};
+                $Val;
             },
         );
 
