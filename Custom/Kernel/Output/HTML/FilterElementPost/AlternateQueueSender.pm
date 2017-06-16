@@ -42,6 +42,7 @@ sub Run {
     my $QueueSenderObject   = $Kernel::OM->Get('Kernel::System::QueueSender');
     my $SystemAddressObject = $Kernel::OM->Get('Kernel::System::SystemAddress');
     my $LayoutObject        = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+    my $ConfigObject        = $Kernel::OM->Get('Kernel::Config');
 
     # get template name
     my $Templatename = $Param{TemplateFile} || '';
@@ -77,7 +78,33 @@ sub Run {
             UserID => $Self->{UserID},
         );
 
-        $Template =~ s{<OTRS_TICKET_([^>]+)>}{$Ticket{$1}}xmsg;
+        my %Filters = (
+            lc            => sub { lc $_[0] },
+            convert_chars => sub {
+                my $Val = $_[0];
+                my $Map = $ConfigObject->Get('Convert::Chars') || {};
+                $Val =~ s{ $_ }{$Map->{$_}}g for sort keys %{$Map};
+            },
+        );
+
+        my $FiltersRE = join '|', sort keys %Filters;
+
+        $Template =~ s{<OTRS_TICKET_([^>]+)>}{
+            my $OrigKey             = $1;
+            my ($Key, $AllCommands) = $1 =~ m!\A ([^\s]+) ((?: \s+ \| \s+ (?:$FiltersRE))+ )!xg;
+
+            my @Commands = split /\s*\|\s*/, $AllCommands;
+
+            my $Replace = $Key ? $Ticket{$Key} : $Ticket{$OrigKey};
+            for my $Command ( @Commands ) {
+                if ( $Command && $Filters{$Command} ) {
+                    $Replace = $Filters{$Command}->( $Replace );
+                }
+            }
+
+            $Replace;
+        }exmsg;
+
         $Template =~ s{<OTRS_([^>]+)>}{$UserData{$1}}xsmg;
         $Template =~ s{<OTRS_([^>]+)>}{}xsmg;
     }
@@ -93,7 +120,8 @@ sub Run {
             convert_chars => sub {
                 my $Val = $_[0];
                 my $Map = $ConfigObject->Get('Convert::Chars') || {};
-                $Val =~ s{ $_ }{$Map->{$_}}g for sort keys %{$Map};
+                $Val =~ s{ $_ }{$Map->{$_}}xg for sort keys %{$Map};
+                $Val;
             },
         );
 
