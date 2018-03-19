@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2014 - 2016 Perl-Services.de, http://www.perl-services.de/
+# Copyright (C) 2014 - 2018 Perl-Services.de, http://www.perl-services.de/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -106,6 +106,17 @@ sub Run {
             $Replace;
         }exmsg;
 
+        my $CustomerUserObject = $Kernel::OM->Get('Kernel::System::CustomerUser');
+        if ( $Ticket{CustomerUserID} ) {
+            my %CustomerData = $CustomerUserObject->CustomerUserDataGet(
+                User => $Ticket{CustomerUserID},
+            );
+
+            if ( %CustomerData ) {
+                $Template =~ s{<OTRS_CUSTOMER_([^>]+)>}{$CustomerData{$1}}xsmg;
+            }
+        }
+
         $Template =~ s{<OTRS_([^>]+)>}{$UserData{$1}}xsmg;
         $Template =~ s{<OTRS_([^>]+)>}{}xsmg;
     }
@@ -143,6 +154,17 @@ sub Run {
 
             $Replace;
         }exmsg;
+
+        my $CustomerUserObject = $Kernel::OM->Get('Kernel::System::CustomerUser');
+        if ( $Ticket{CustomerUserID} ) {
+            my %CustomerData = $CustomerUserObject->CustomerUserDataGet(
+                User => $Ticket{CustomerUserID},
+            );
+
+            if ( %CustomerData ) {
+                $TemplateAddress =~ s{<OTRS_CUSTOMER_([^>]+)>}{$CustomerData{$1}}xsmg;
+            }
+        }
 
         $TemplateAddress =~ s{<OTRS_([^>]+)>}{$UserData{$1}}xsmg;
         $TemplateAddress =~ s{<OTRS_([^>]+)>}{}xsmg;
@@ -199,7 +221,7 @@ sub Run {
         </div>
     )}{<div class="Field">$Select</div>}smx;
 
-    return ${ $Param{Data} };
+    return 1;
 }
 
 1;
