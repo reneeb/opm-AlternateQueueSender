@@ -2,7 +2,7 @@
 <otrs_package version="1.0">
     <!-- GENERATED WITH OTRS::OPM::Maker::Command::sopm (1.4) -->
     <Name>AlternateQueueSender</Name>
-    <Version>6.0.2</Version>
+    <Version>6.0.3</Version>
     <Framework>6.0.x</Framework>
     <Vendor>Perl-Services.de</Vendor>
     <URL>http://www.perl-services.de</URL>
@@ -17,6 +17,7 @@
         <File Permission="644" Location="Custom/Kernel/Output/HTML/Templates/Standard/AdminQueueSenderList.tt" />
         <File Permission="644" Location="Custom/Kernel/System/QueueSender.pm" />
         <File Permission="644" Location="Kernel/Config/Files/XML/AlternateQueueSender.xml" />
+        <File Permission="644" Location="Kernel/Config/Files/ZZZAlternateQueueSender.pm" />
         <File Permission="644" Location="Kernel/Language/de_AlternateQueueSender.pm" />
         <File Permission="644" Location="Kernel/Language/hu_AlternateQueueSender.pm" />
         <File Permission="644" Location="doc/AlternateQueueSender.json" />
