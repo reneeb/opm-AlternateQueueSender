@@ -214,12 +214,20 @@ sub Run {
         Class         => 'Modernize',
     );
 
+#    ${ $Param{Data} } =~ s{(
+#        <div \s+ class="Field"> \s+
+#            [^<]*? <input [^>]+ name="From" [^>]+ > \s+
+#            [^<]*?
+#        </div>
+#    )}{<div class="Field">$Select</div>}smx;
+
+    my $From = $LayoutObject->{LanguageObject}->Translate('From');
     ${ $Param{Data} } =~ s{(
-        <div \s+ class="Field"> \s+
-            [^<]*? <input [^>]+ name="From" [^>]+ > \s+
-            [^<]*?
+        <label>\Q$From\E:</label> \s+
+        <div \s+ class="Field"> \K
+            .*?
         </div>
-    )}{<div class="Field">$Select</div>}smx;
+    )}{$Select</div>}smx;
 
     return 1;
 }
