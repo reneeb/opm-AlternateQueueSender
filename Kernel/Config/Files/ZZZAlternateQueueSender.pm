@@ -3,7 +3,7 @@ package Kernel::Config::Files::ZZZAlternateQueueSender;
 use strict;
 use warnings;
 
-use List::Utils qw(first);
+use List::Util qw(first);
 
 use Kernel::System::TemplateGenerator;
 
@@ -29,7 +29,8 @@ sub Load {
             if ( first { 'AgentTicket' . $_ eq $Action } qw(Bounce Forward Compose EmailOutbound) ) {
                 $Sender = $ParamObject->GetParam( Param => 'From' );
             }
-            else {
+
+            if ( !$Sender ) {
                 $Sender = $Self->$OrigCode( %Param );
             }
 
