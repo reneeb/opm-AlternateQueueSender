@@ -269,7 +269,7 @@ sub _MaskQueueSenderForm {
         );
 
         $SystemAddressesToShow{$AddressID} = sprintf q~"%s" <%s>~, $Info{Realname}, $Info{Name};
-        $SystemAddressInfo{ $Info{Name} }  = $Info{Realname};
+        $SystemAddressInfo{ $Info{Name} }  = qq~"$Info{Realname}"~;
     }
 
     $Param{SystemAddressSelect} = $LayoutObject->BuildSelection(

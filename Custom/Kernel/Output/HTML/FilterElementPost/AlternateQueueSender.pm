@@ -174,7 +174,7 @@ sub Run {
             $SenderAddresses{$TemplateAddress} = $TemplateAddress;
 
             if ( $Template && $TemplateAddress ) {
-                $TemplateAddress = sprintf "%s <%s>", $Template, $TemplateAddress;
+                $TemplateAddress = sprintf q~"%s" <%s>~, $Template, $TemplateAddress;
                 $SenderAddresses{$TemplateAddress} = $TemplateAddress;
             }
         }
@@ -187,11 +187,11 @@ sub Run {
 
         next if !$Address{ValidID} || $Address{ValidID} != 1;
 
-        my $Address = $Address{Realname} ? (sprintf "%s <%s>", $Address{Realname}, $Address{Name}) : $Address{Name};
+        my $Address = $Address{Realname} ? (sprintf q~"%s" <%s>~, $Address{Realname}, $Address{Name}) : $Address{Name};
         $SenderAddresses{$Address} = $Address;
 
         if ( $Template ) {
-            $Address =  sprintf "%s <%s>", $Template, $Address{Name};
+            $Address =  sprintf q~"%s" <%s>~, $Template, $Address{Name};
             $SenderAddresses{$Address} = $Address;
         }
 
@@ -214,12 +214,20 @@ sub Run {
         Class         => 'Modernize',
     );
 
+#    ${ $Param{Data} } =~ s{(
+#        <div \s+ class="Field"> \s+
+#            [^<]*? <input [^>]+ name="From" [^>]+ > \s+
+#            [^<]*?
+#        </div>
+#    )}{<div class="Field">$Select</div>}smx;
+
+    my $From = $LayoutObject->{LanguageObject}->Translate('From');
     ${ $Param{Data} } =~ s{(
-        <div \s+ class="Field"> \s+
-            [^<]*? <input [^>]+ name="From" [^>]+ > \s+
-            [^<]*?
+        <label>\Q$From\E:</label> \s+
+        <div \s+ class="Field"> \K
+            .*?
         </div>
-    )}{<div class="Field">$Select</div>}smx;
+    )}{$Select</div>}smx;
 
     return 1;
 }
