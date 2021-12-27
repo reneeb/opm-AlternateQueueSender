@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2014 - 2018 Perl-Services.de, http://www.perl-services.de/
+# Copyright (C) 2014 - 2021 Perl-Services.de, http://www.perl-services.de/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -40,6 +40,7 @@ sub Run {
     my $TicketObject        = $Kernel::OM->Get('Kernel::System::Ticket');
     my $QueueObject         = $Kernel::OM->Get('Kernel::System::Queue');
     my $QueueSenderObject   = $Kernel::OM->Get('Kernel::System::QueueSender');
+    my $UtilsObject         = $Kernel::OM->Get('Kernel::System::QueueSender::Utils');
     my $SystemAddressObject = $Kernel::OM->Get('Kernel::System::SystemAddress');
     my $LayoutObject        = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
     my $ConfigObject        = $Kernel::OM->Get('Kernel::Config');
@@ -73,103 +74,21 @@ sub Run {
     my %SenderAddresses;
 
     if ( $Template ) {
-        my $UserObject = $Kernel::OM->Get('Kernel::System::User');
-        my %UserData   = $UserObject->GetUserData(
-            UserID => $Self->{UserID},
+        $Template = $UtilsObject->ReplaceMacros(
+            Template => $Template,
+            Ticket   => \%Ticket,
+            UserID   => $Self->{UserID},
         );
-
-        my %Filters = (
-            lc            => sub { lc $_[0] },
-            convert_chars => sub {
-                my $Val = $_[0];
-                my $Map = $ConfigObject->Get('Convert::Chars') || {};
-                $Val =~ s{ $_ }{$Map->{$_}}g for sort keys %{$Map};
-                $Val;
-            },
-        );
-
-        my $FiltersRE = join '|', sort keys %Filters;
-
-        $Template =~ s{<OTRS_TICKET_([^>]+)>}{
-            my $OrigKey             = $1;
-            my ($Key, $AllCommands) = $1 =~ m!\A ([^\s]+) ((?: \s+ \| \s+ (?:$FiltersRE))+ )!xg;
-
-            my @Commands = split /\s*\|\s*/, $AllCommands;
-
-            my $Replace = $Key ? $Ticket{$Key} : $Ticket{$OrigKey};
-            for my $Command ( @Commands ) {
-                if ( $Command && $Filters{$Command} ) {
-                    $Replace = $Filters{$Command}->( $Replace );
-                }
-            }
-
-            $Replace;
-        }exmsg;
-
-        my $CustomerUserObject = $Kernel::OM->Get('Kernel::System::CustomerUser');
-        if ( $Ticket{CustomerUserID} ) {
-            my %CustomerData = $CustomerUserObject->CustomerUserDataGet(
-                User => $Ticket{CustomerUserID},
-            );
-
-            if ( %CustomerData ) {
-                $Template =~ s{<OTRS_CUSTOMER_([^>]+)>}{$CustomerData{$1}}xsmg;
-            }
-        }
-
-        $Template =~ s{<OTRS_([^>]+)>}{$UserData{$1}}xsmg;
-        $Template =~ s{<OTRS_([^>]+)>}{}xsmg;
     }
 
     if ( $TemplateAddress ) {
-        my $UserObject = $Kernel::OM->Get('Kernel::System::User');
-        my %UserData   = $UserObject->GetUserData(
-            UserID => $Self->{UserID},
+        $TemplateAddress = $UtilsObject->ReplaceMacros(
+            Template => $TemplateAddress,
+            Ticket   => \%Ticket,
+            UserID   => $Self->{UserID},
         );
 
-        my %Filters = (
-            lc            => sub { lc $_[0] },
-            convert_chars => sub {
-                my $Val = $_[0];
-                my $Map = $ConfigObject->Get('Convert::Chars') || {};
-                $Val =~ s{ $_ }{$Map->{$_}}xg for sort keys %{$Map};
-                $Val;
-            },
-        );
-
-        my $FiltersRE = join '|', sort keys %Filters;
-
-        $TemplateAddress =~ s{<OTRS_TICKET_([^>]+)>}{
-            my $OrigKey             = $1;
-            my ($Key, $AllCommands) = $1 =~ m!\A ([^\s]+) ((?: \s+ \| \s+ (?:$FiltersRE))+ )!xg;
-
-            my @Commands = split /\s*\|\s*/, $AllCommands;
-
-            my $Replace = $Key ? $Ticket{$Key} : $Ticket{$OrigKey};
-            for my $Command ( @Commands ) {
-                if ( $Command && $Filters{$Command} ) {
-                    $Replace = $Filters{$Command}->( $Replace );
-                }
-            }
-
-            $Replace;
-        }exmsg;
-
-        my $CustomerUserObject = $Kernel::OM->Get('Kernel::System::CustomerUser');
-        if ( $Ticket{CustomerUserID} ) {
-            my %CustomerData = $CustomerUserObject->CustomerUserDataGet(
-                User => $Ticket{CustomerUserID},
-            );
-
-            if ( %CustomerData ) {
-                $TemplateAddress =~ s{<OTRS_CUSTOMER_([^>]+)>}{$CustomerData{$1}}xsmg;
-            }
-        }
-
-        $TemplateAddress =~ s{<OTRS_([^>]+)>}{$UserData{$1}}xsmg;
-        $TemplateAddress =~ s{<OTRS_([^>]+)>}{}xsmg;
-
-        if ( $TemplateAddress !~ m{\A\@} ) {
+        if ( $TemplateAddress && $TemplateAddress !~ m{\A\@} ) {
 
             $SenderAddresses{$TemplateAddress} = $TemplateAddress;
 
@@ -213,13 +132,6 @@ sub Run {
         SelectedValue => $SelectedAddress,
         Class         => 'Modernize',
     );
-
-#    ${ $Param{Data} } =~ s{(
-#        <div \s+ class="Field"> \s+
-#            [^<]*? <input [^>]+ name="From" [^>]+ > \s+
-#            [^<]*?
-#        </div>
-#    )}{<div class="Field">$Select</div>}smx;
 
     my $From = $LayoutObject->{LanguageObject}->Translate('From');
     ${ $Param{Data} } =~ s{(
