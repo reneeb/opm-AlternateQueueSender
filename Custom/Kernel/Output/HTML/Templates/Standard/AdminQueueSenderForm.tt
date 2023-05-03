@@ -7,9 +7,8 @@
 # did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
 # --
 
-<div class="MainBox ARIARoleMain LayoutFixedSidebar SidebarFirst">
-    <h1>[% Translate("Queue Sender Management") | html %]</h1>
-    <div class="SidebarColumn">
+<div class="MainBox ARIARoleMain LayoutFixedSidebar SidebarFirst ActionsSideBar">
+    <div class="SidebarColumn ActionsSideBarComp">
         <div class="WidgetSimple">
             <div class="Header">
                 <h2>[% Translate("Actions") | html %]</h2>
@@ -25,6 +24,26 @@
     </div>
 
     <div class="ContentColumn">
+        <h1 class="InvisibleText">[% Translate("Queue Sender Management") | html %]</h1>
+
+       [% BreadcrumbPath = [
+                {
+                    Name => Translate('Queue Sender Management'),
+                    Link => Env("Action"),
+                },
+            ]
+        %]
+
+        [% SWITCH Data.Action %]
+            [% CASE 'Add' %]
+                [% BreadcrumbPath.push({ Name => Translate('Add Queue Sender'),}) %]
+            [% CASE 'Change' %]
+                [% USE EditTitle = String(Translate("Edit Queue Sender")) %]
+                [% BreadcrumbPath.push({ Name => EditTitle.append( ': ', Data.Name ) }) %]
+        [% END %]
+
+        [% INCLUDE "Breadcrumb.tt" Path = BreadcrumbPath %]
+
         <div class="WidgetSimple">
             <div class="Header">
                 <h2>[% Translate("Add/Change Queue Sender") | html %]</h2>
@@ -36,6 +55,7 @@
                     <input type="hidden" name="Subaction" value="[% Data.Subaction | html %]"/>
 
                     <fieldset class="TableLike">
+                      <div class="field-wrapper">
                         <label for="QueueID" class="Mandatory">
                             <span class="Marker">*</span>
                             [% Translate("Queue") | html %]:
@@ -55,8 +75,9 @@
                                 <p>[% Translate("Queue is mandatory.") | html %]</p>
                             </div>
                         </div>
-                        <div class="Clear"></div>
+                      </div>
 
+                      <div class="field-wrapper">
                         <label for="SystemAddressIDs" class="Mandatory">
                             <span class="Marker">*</span>
                             [% Translate("Sender") | html %]:
@@ -70,8 +91,9 @@
                                 <p>[% Translate("Please select sender addresses.") | html %]</p>
                             </div>
                         </div>
-                        <div class="Clear"></div>
+                      </div>
 
+                      <div class="field-wrapper">
                         <label for="TemplateAddress">
                             [% Translate("Template for Address") | html %]:
                         </label>
@@ -84,8 +106,9 @@
                                 [% Translate("E.g. <OTRS_TICKET_DynamicField_Project>@test.example") | html %]
                             </p>
                         </div>
-                        <div class="Clear"></div>
+                      </div>
 
+                      <div class="field-wrapper">
                         <label for="IsDefault">
                             [% Translate("Make Default Address") | html %]:
                         </label>
@@ -93,8 +116,9 @@
                             <input type="hidden" name="IsDefault" id="IsDefault" value="[% Data.IsDefault | html %]" />
                             <input type="checkbox" name="IsDefaultCheckbox" id="IsDefaultCheckbox" [% Data.IsDefaultChecked %]>
                         </div>
-                        <div class="Clear"></div>
+                      </div>
 
+                      <div class="field-wrapper">
                         <label for="Template">
                             [% Translate("Template for Real Name") | html %]:
                         </label>
@@ -107,14 +131,13 @@
                                 [% Translate("E.g. <OTRS_UserLastname> for <OTRS_DynamicField_Project>") | html %]
                             </p>
                         </div>
-                        <div class="Clear"></div>
+                      </div>
 
-                        <div class="Field">
-                            <button class="Primary CallForAction" type="submit" value="[% Translate("Save") | html %]"><span>[% Translate("Save") | html %]</span></button>
-                            [% Translate("or") | html %]
-                            <a href="[% Env("Baselink") %]Action=[% Env("Action") %]">[% Translate("Cancel") | html %]</a>
+                      <div class="field-wrapper form-button-actions">
+                        <div class="Field buttons-field">
+                            <button class="Primary CallForAction  btn-primary btn-main  btn-width-md" type="submit" value="[% Translate("Save") | html %]"><span>[% Translate("Save") | html %]</span></button>
                         </div>
-                        <div class="Clear"></div>
+                      </div>
                     </fieldset>
                 </form>
             </div>
