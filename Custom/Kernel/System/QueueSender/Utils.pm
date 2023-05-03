@@ -88,6 +88,8 @@ sub ReplaceMacros {
         my @Commands = split /\s*\|\s*/, $AllCommands || '';
 
         my $Replace = $Key ? $Ticket{$Key} : $Ticket{$OrigKey};
+	$Replace //= '';
+
         for my $Command ( @Commands ) {
             next if !$Command;
             if ( $Command && $Filters{$Command} ) {

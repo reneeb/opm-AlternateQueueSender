@@ -12,8 +12,6 @@ our $ObjectManagerDisabled = 1;
 $Kernel::Loaded{__PACKAGE__ . ""} = 0;
 
 sub Load {
-    no warnings 'redefine';
-
     return if $Kernel::Loaded{__PACKAGE__ . ""};
 
     # disable redefine warnings in this scope
@@ -94,6 +92,8 @@ sub Load {
                 my $Address = $Address{Realname} ?
                     (sprintf q~"%s" <%s>~, $Address{Realname}, $Address{Name}) :
                     $Address{Name};
+
+                $ValidQueueSender{$Address} = 1;
 
                 if ( $Template ) {
                     $Address =  sprintf q~"%s" <%s>~, $Template, $Address{Name};
